@@ -607,13 +607,18 @@
     </div>
 
     <script>
-        // Storage Manager
+        // Storage Manager - Works everywhere (GitHub Pages, local, claude.ai)
         class StorageManager {
+            static isClaudeStorage() {
+                return typeof window.storage !== 'undefined' && 
+                       typeof window.storage.get === 'function';
+            }
+
             static async init() {
                 try {
                     // Initialize default admin if not exists
                     const users = await this.get('users', false);
-                    if (!users) {
+                    if (!users || users.length === 0) {
                         const defaultAdmin = {
                             id: 'admin-1',
                             username: 'admin',
@@ -637,8 +642,15 @@
 
             static async get(key, shared = false) {
                 try {
-                    const result = await window.storage.get(key, shared);
-                    return result ? JSON.parse(result.value) : null;
+                    if (this.isClaudeStorage()) {
+                        // Use Claude's persistent storage
+                        const result = await window.storage.get(key, shared);
+                        return result ? JSON.parse(result.value) : null;
+                    } else {
+                        // Fallback to localStorage
+                        const item = localStorage.getItem(key);
+                        return item ? JSON.parse(item) : null;
+                    }
                 } catch (error) {
                     console.log(`Key ${key} not found or error:`, error);
                     return null;
@@ -647,8 +659,15 @@
 
             static async set(key, value, shared = false) {
                 try {
-                    const result = await window.storage.set(key, JSON.stringify(value), shared);
-                    return result !== null;
+                    if (this.isClaudeStorage()) {
+                        // Use Claude's persistent storage
+                        const result = await window.storage.set(key, JSON.stringify(value), shared);
+                        return result !== null;
+                    } else {
+                        // Fallback to localStorage
+                        localStorage.setItem(key, JSON.stringify(value));
+                        return true;
+                    }
                 } catch (error) {
                     console.error('Storage set error:', error);
                     return false;
@@ -657,7 +676,13 @@
 
             static async delete(key, shared = false) {
                 try {
-                    await window.storage.delete(key, shared);
+                    if (this.isClaudeStorage()) {
+                        // Use Claude's persistent storage
+                        await window.storage.delete(key, shared);
+                    } else {
+                        // Fallback to localStorage
+                        localStorage.removeItem(key);
+                    }
                     return true;
                 } catch (error) {
                     console.error('Storage delete error:', error);
