@@ -234,6 +234,7 @@
             margin-bottom: 10px;
             font-size: 14px;
             color: #718096;
+            flex-wrap: wrap;
         }
 
         .task-description {
@@ -406,6 +407,27 @@
             margin-bottom: 16px;
         }
 
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         @media (max-width: 768px) {
             .task-header, .employee-header {
                 flex-direction: column;
@@ -424,8 +446,14 @@
 </head>
 <body>
     <div class="container">
+        <!-- Loading Screen -->
+        <div id="loadingScreen" class="loading">
+            <div class="loading-spinner"></div>
+            <p>טוען את המערכת...</p>
+        </div>
+
         <!-- Login Screen -->
-        <div id="loginScreen" class="login-container">
+        <div id="loginScreen" class="login-container hidden">
             <h2>🏢 אורי מועלם ושות'</h2>
             <h3 style="text-align: center; color: #718096; margin-bottom: 30px;">מערכת ניהול משימות</h3>
             
@@ -433,8 +461,8 @@
             
             <form id="loginForm">
                 <div class="form-group">
-                    <label>שם משתמש</label>
-                    <input type="text" id="username" required>
+                    <label>אימייל</label>
+                    <input type="email" id="email" required placeholder="admin@moalem.co.il">
                 </div>
                 <div class="form-group">
                     <label>סיסמה</label>
@@ -503,16 +531,12 @@
                     <input type="text" id="employeeName" required>
                 </div>
                 <div class="form-group">
-                    <label>שם משתמש</label>
-                    <input type="text" id="employeeUsername" required>
+                    <label>אימייל</label>
+                    <input type="email" id="employeeEmail" required>
                 </div>
                 <div class="form-group">
                     <label>סיסמה</label>
-                    <input type="password" id="employeePassword" required>
-                </div>
-                <div class="form-group">
-                    <label>אימייל (אופציונלי)</label>
-                    <input type="email" id="employeeEmail">
+                    <input type="password" id="employeePassword" required minlength="6">
                 </div>
                 <button type="submit" class="btn btn-success" style="width: 100%;">הוסף עובד</button>
             </form>
@@ -606,132 +630,143 @@
         </div>
     </div>
 
-    <script>
-        // Storage Manager - Works everywhere (GitHub Pages, local, claude.ai)
-        class StorageManager {
-            static isClaudeStorage() {
-                return typeof window.storage !== 'undefined' && 
-                       typeof window.storage.get === 'function';
-            }
+    <!-- Firebase SDKs -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, getDoc, query, where, onSnapshot, setDoc, serverTimestamp, Timestamp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
-            static async init() {
-                try {
-                    // Initialize default admin if not exists
-                    const users = await this.get('users', false);
-                    if (!users || users.length === 0) {
-                        const defaultAdmin = {
-                            id: 'admin-1',
-                            username: 'admin',
-                            password: 'admin123',
-                            name: 'אורי מועלם',
-                            role: 'admin',
-                            email: 'uri@moalem.co.il'
-                        };
-                        await this.set('users', [defaultAdmin], false);
-                    }
+        // Firebase configuration - YOUR PROJECT
+        const firebaseConfig = {
+            apiKey: "AIzaSyDOpsv-fuEN79loRfc6nZZAXxXBiQe4lzY",
+            authDomain: "moalem-tasks.firebaseapp.com",
+            projectId: "moalem-tasks",
+            storageBucket: "moalem-tasks.firebasestorage.app",
+            messagingSenderId: "253795755183",
+            appId: "1:253795755183:web:2df7102d41ccffa0aaa05a",
+            measurementId: "G-39RBM8LM10"
+        };
 
-                    // Initialize tasks if not exists
-                    const tasks = await this.get('tasks', false);
-                    if (!tasks) {
-                        await this.set('tasks', [], false);
-                    }
-                } catch (error) {
-                    console.error('Storage initialization error:', error);
-                }
-            }
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
-            static async get(key, shared = false) {
-                try {
-                    if (this.isClaudeStorage()) {
-                        // Use Claude's persistent storage
-                        const result = await window.storage.get(key, shared);
-                        return result ? JSON.parse(result.value) : null;
-                    } else {
-                        // Fallback to localStorage
-                        const item = localStorage.getItem(key);
-                        return item ? JSON.parse(item) : null;
-                    }
-                } catch (error) {
-                    console.log(`Key ${key} not found or error:`, error);
-                    return null;
-                }
-            }
-
-            static async set(key, value, shared = false) {
-                try {
-                    if (this.isClaudeStorage()) {
-                        // Use Claude's persistent storage
-                        const result = await window.storage.set(key, JSON.stringify(value), shared);
-                        return result !== null;
-                    } else {
-                        // Fallback to localStorage
-                        localStorage.setItem(key, JSON.stringify(value));
-                        return true;
-                    }
-                } catch (error) {
-                    console.error('Storage set error:', error);
-                    return false;
-                }
-            }
-
-            static async delete(key, shared = false) {
-                try {
-                    if (this.isClaudeStorage()) {
-                        // Use Claude's persistent storage
-                        await window.storage.delete(key, shared);
-                    } else {
-                        // Fallback to localStorage
-                        localStorage.removeItem(key);
-                    }
-                    return true;
-                } catch (error) {
-                    console.error('Storage delete error:', error);
-                    return false;
-                }
-            }
-        }
-
-        // App State
+        // Global state
         let currentUser = null;
+        let currentUserData = null;
+        let allUsers = [];
+        let allTasks = [];
+        let unsubscribeTasks = null;
+        let unsubscribeUsers = null;
 
         // Initialize app
         async function initApp() {
-            await StorageManager.init();
-            checkAuth();
+            // Listen to auth state changes
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    currentUser = user;
+                    await loadUserData();
+                    hideLoadingScreen();
+                    showMainApp();
+                } else {
+                    currentUser = null;
+                    currentUserData = null;
+                    hideLoadingScreen();
+                    showLoginScreen();
+                }
+            });
+        }
+
+        // Load user data from Firestore
+        async function loadUserData() {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+                if (userDoc.exists()) {
+                    currentUserData = { id: currentUser.uid, ...userDoc.data() };
+                } else {
+                    // Create user document if it doesn't exist
+                    // Check if user is admin (first user or specific email)
+                    const usersSnapshot = await getDocs(collection(db, 'users'));
+                    const isFirstUser = usersSnapshot.empty;
+                    const isAdmin = isFirstUser || currentUser.email === 'admin@moalem.co.il';
+                    
+                    currentUserData = {
+                        id: currentUser.uid,
+                        email: currentUser.email,
+                        name: currentUser.email.split('@')[0],
+                        role: isAdmin ? 'admin' : 'employee',
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    await setDoc(doc(db, 'users', currentUser.uid), currentUserData);
+                }
+
+                // Subscribe to real-time updates
+                subscribeToUpdates();
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                showError('loginError', 'שגיאה בטעינת נתוני משתמש');
+            }
+        }
+
+        // Subscribe to real-time updates
+        function subscribeToUpdates() {
+            // Subscribe to users collection
+            unsubscribeUsers = onSnapshot(collection(db, 'users'), (snapshot) => {
+                allUsers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                if (currentUserData?.role === 'admin') {
+                    loadEmployees();
+                }
+            });
+
+            // Subscribe to tasks collection
+            unsubscribeTasks = onSnapshot(collection(db, 'tasks'), (snapshot) => {
+                allTasks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                if (currentUserData?.role === 'admin') {
+                    loadAllTasks();
+                } else {
+                    loadEmployeeTasks();
+                }
+            });
         }
 
         // Authentication
-        function checkAuth() {
-            const savedUser = localStorage.getItem('currentUser');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                showMainApp();
-            } else {
-                showLoginScreen();
-            }
-        }
-
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            const users = await StorageManager.get('users', false) || [];
-            const user = users.find(u => u.username === username && u.password === password);
-
-            if (user) {
-                currentUser = user;
-                localStorage.setItem('currentUser', JSON.stringify(user));
-                showMainApp();
-            } else {
-                showError('loginError', 'שם משתמש או סיסמה שגויים');
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (error) {
+                console.error('Login error:', error);
+                let errorMessage = 'שגיאה בהתחברות';
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                    errorMessage = 'אימייל או סיסמה שגויים';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = 'כתובת אימייל לא תקינה';
+                }
+                showError('loginError', errorMessage);
             }
         });
 
-        function logout() {
-            currentUser = null;
-            localStorage.removeItem('currentUser');
-            showLoginScreen();
+        window.logout = async function() {
+            try {
+                // Unsubscribe from real-time updates
+                if (unsubscribeTasks) unsubscribeTasks();
+                if (unsubscribeUsers) unsubscribeUsers();
+                
+                await signOut(auth);
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        };
+
+        // Screen management
+        function hideLoadingScreen() {
+            document.getElementById('loadingScreen').classList.add('hidden');
         }
 
         function showLoginScreen() {
@@ -742,22 +777,20 @@
         function showMainApp() {
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
-            document.getElementById('currentUserDisplay').textContent = `${currentUser.name} (${currentUser.role === 'admin' ? 'מנהל' : 'עובד'})`;
+            document.getElementById('currentUserDisplay').textContent = 
+                `${currentUserData.name} (${currentUserData.role === 'admin' ? 'מנהל' : 'עובד'})`;
 
-            if (currentUser.role === 'admin') {
+            if (currentUserData.role === 'admin') {
                 document.getElementById('adminView').classList.remove('hidden');
                 document.getElementById('employeeView').classList.add('hidden');
-                loadEmployees();
-                loadAllTasks();
             } else {
                 document.getElementById('adminView').classList.add('hidden');
                 document.getElementById('employeeView').classList.remove('hidden');
-                loadEmployeeTasks();
             }
         }
 
         // Admin Functions
-        function switchAdminTab(tab) {
+        window.switchAdminTab = function(tab) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
@@ -768,13 +801,10 @@
                 document.querySelectorAll('.tab')[1].classList.add('active');
                 document.getElementById('allTasksTab').classList.add('active');
             }
-        }
+        };
 
-        async function loadEmployees() {
-            const users = await StorageManager.get('users', false) || [];
-            const tasks = await StorageManager.get('tasks', false) || [];
-            const employees = users.filter(u => u.role === 'employee');
-
+        function loadEmployees() {
+            const employees = allUsers.filter(u => u.role === 'employee');
             const container = document.getElementById('employeesList');
             
             if (employees.length === 0) {
@@ -788,7 +818,7 @@
             }
 
             container.innerHTML = employees.map(emp => {
-                const empTasks = tasks.filter(t => t.assignedTo === emp.id);
+                const empTasks = allTasks.filter(t => t.assignedTo === emp.id);
                 const completedTasks = empTasks.filter(t => t.status === 'done').length;
                 const inProgressTasks = empTasks.filter(t => t.status === 'in-progress').length;
 
@@ -797,7 +827,7 @@
                         <div class="employee-header">
                             <div>
                                 <div class="employee-name">👤 ${emp.name}</div>
-                                <div style="color: #718096; font-size: 14px; margin-top: 5px;">@${emp.username}</div>
+                                <div style="color: #718096; font-size: 14px; margin-top: 5px;">${emp.email}</div>
                             </div>
                             <button class="btn btn-danger" onclick="deleteEmployee('${emp.id}')">🗑️ מחק</button>
                         </div>
@@ -814,12 +844,10 @@
             }).join('');
         }
 
-        async function loadAllTasks() {
-            const tasks = await StorageManager.get('tasks', false) || [];
-            const users = await StorageManager.get('users', false) || [];
+        function loadAllTasks() {
             const container = document.getElementById('allTasksList');
 
-            if (tasks.length === 0) {
+            if (allTasks.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-state-icon">📝</div>
@@ -829,85 +857,100 @@
                 return;
             }
 
-            const sortedTasks = tasks.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            const sortedTasks = [...allTasks].sort((a, b) => {
+                const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt);
+                const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt);
+                return dateB - dateA;
+            });
             
             container.innerHTML = sortedTasks.map(task => {
-                const assignedUser = users.find(u => u.id === task.assignedTo);
+                const assignedUser = allUsers.find(u => u.id === task.assignedTo);
                 return renderTaskCard(task, assignedUser);
             }).join('');
         }
 
-        function openAddEmployeeModal() {
+        window.openAddEmployeeModal = function() {
             document.getElementById('addEmployeeModal').classList.add('active');
-        }
+        };
 
         document.getElementById('addEmployeeForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const newEmployee = {
-                id: 'emp-' + Date.now(),
-                username: document.getElementById('employeeUsername').value,
-                password: document.getElementById('employeePassword').value,
-                name: document.getElementById('employeeName').value,
-                email: document.getElementById('employeeEmail').value,
-                role: 'employee'
-            };
+            const name = document.getElementById('employeeName').value;
+            const email = document.getElementById('employeeEmail').value;
+            const password = document.getElementById('employeePassword').value;
 
-            const users = await StorageManager.get('users', false) || [];
-            
-            // Check if username exists
-            if (users.find(u => u.username === newEmployee.username)) {
-                alert('שם המשתמש כבר קיים במערכת');
-                return;
+            try {
+                // Create auth user
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                
+                // Create user document
+                await setDoc(doc(db, 'users', userCredential.user.uid), {
+                    name: name,
+                    email: email,
+                    role: 'employee',
+                    createdAt: serverTimestamp()
+                });
+
+                // Sign back in as admin
+                await signInWithEmailAndPassword(auth, currentUserData.email, 'temp');
+
+                closeModal('addEmployeeModal');
+                document.getElementById('addEmployeeForm').reset();
+                alert('העובד נוסף בהצלחה!');
+            } catch (error) {
+                console.error('Error adding employee:', error);
+                let errorMessage = 'שגיאה בהוספת עובד';
+                if (error.code === 'auth/email-already-in-use') {
+                    errorMessage = 'האימייל כבר קיים במערכת';
+                } else if (error.code === 'auth/weak-password') {
+                    errorMessage = 'הסיסמה חייבת להיות לפחות 6 תווים';
+                }
+                alert(errorMessage);
             }
-
-            users.push(newEmployee);
-            await StorageManager.set('users', users, false);
-
-            closeModal('addEmployeeModal');
-            document.getElementById('addEmployeeForm').reset();
-            loadEmployees();
         });
 
-        async function deleteEmployee(employeeId) {
-            if (!confirm('האם אתה בטוח שברצונך למחוק עובד זה?')) return;
+        window.deleteEmployee = async function(employeeId) {
+            if (!confirm('האם אתה בטוח שברצונך למחוק עובד זה? כל המשימות שלו יימחקו!')) return;
 
-            const users = await StorageManager.get('users', false) || [];
-            const filtered = users.filter(u => u.id !== employeeId);
-            await StorageManager.set('users', filtered, false);
+            try {
+                // Delete user document
+                await deleteDoc(doc(db, 'users', employeeId));
 
-            // Also delete employee's tasks
-            const tasks = await StorageManager.get('tasks', false) || [];
-            const filteredTasks = tasks.filter(t => t.assignedTo !== employeeId);
-            await StorageManager.set('tasks', filteredTasks, false);
+                // Delete all employee's tasks
+                const employeeTasks = allTasks.filter(t => t.assignedTo === employeeId);
+                for (const task of employeeTasks) {
+                    await deleteDoc(doc(db, 'tasks', task.id));
+                }
 
-            loadEmployees();
-            loadAllTasks();
-        }
+                alert('העובד נמחק בהצלחה');
+            } catch (error) {
+                console.error('Error deleting employee:', error);
+                alert('שגיאה במחיקת עובד');
+            }
+        };
 
-        function openAssignTaskModal(employeeId, employeeName) {
+        window.openAssignTaskModal = function(employeeId, employeeName) {
             openAddTaskModal();
             document.getElementById('assignToEmployee').value = employeeId;
             document.querySelector('#addTaskModal .modal-title').textContent = `משימה חדשה ל${employeeName}`;
-        }
+        };
 
         // Task Functions
-        function openAddTaskModal() {
+        window.openAddTaskModal = function() {
             const modal = document.getElementById('addTaskModal');
             modal.classList.add('active');
             
-            if (currentUser.role === 'admin') {
+            if (currentUserData.role === 'admin') {
                 document.getElementById('assignToGroup').style.display = 'block';
                 loadEmployeeOptions();
             } else {
                 document.getElementById('assignToGroup').style.display = 'none';
             }
-        }
+        };
 
-        async function loadEmployeeOptions() {
-            const users = await StorageManager.get('users', false) || [];
-            const employees = users.filter(u => u.role === 'employee');
-            
+        function loadEmployeeOptions() {
+            const employees = allUsers.filter(u => u.role === 'employee');
             const select = document.getElementById('assignToEmployee');
             select.innerHTML = '<option value="">עבורי</option>' + 
                 employees.map(emp => `<option value="${emp.id}">${emp.name}</option>`).join('');
@@ -916,39 +959,31 @@
         document.getElementById('addTaskForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const assignTo = document.getElementById('assignToEmployee').value || currentUser.id;
+            const assignTo = document.getElementById('assignToEmployee').value || currentUser.uid;
             
-            const newTask = {
-                id: 'task-' + Date.now(),
-                title: document.getElementById('taskTitle').value,
-                description: document.getElementById('taskDescription').value,
-                dueDate: document.getElementById('taskDueDate').value,
-                status: 'todo',
-                assignedTo: assignTo,
-                createdBy: currentUser.id,
-                createdAt: new Date().toISOString(),
-                notes: '',
-                comments: []
-            };
+            try {
+                await addDoc(collection(db, 'tasks'), {
+                    title: document.getElementById('taskTitle').value,
+                    description: document.getElementById('taskDescription').value,
+                    dueDate: document.getElementById('taskDueDate').value,
+                    status: 'todo',
+                    assignedTo: assignTo,
+                    createdBy: currentUser.uid,
+                    createdAt: serverTimestamp(),
+                    notes: '',
+                    comments: []
+                });
 
-            const tasks = await StorageManager.get('tasks', false) || [];
-            tasks.push(newTask);
-            await StorageManager.set('tasks', tasks, false);
-
-            closeModal('addTaskModal');
-            document.getElementById('addTaskForm').reset();
-
-            if (currentUser.role === 'admin') {
-                loadAllTasks();
-                loadEmployees();
-            } else {
-                loadEmployeeTasks();
+                closeModal('addTaskModal');
+                document.getElementById('addTaskForm').reset();
+            } catch (error) {
+                console.error('Error adding task:', error);
+                alert('שגיאה ביצירת משימה');
             }
         });
 
-        async function loadEmployeeTasks() {
-            const tasks = await StorageManager.get('tasks', false) || [];
-            const myTasks = tasks.filter(t => t.assignedTo === currentUser.id);
+        function loadEmployeeTasks() {
+            const myTasks = allTasks.filter(t => t.assignedTo === currentUser.uid);
             const container = document.getElementById('employeeTasksList');
 
             if (myTasks.length === 0) {
@@ -961,7 +996,12 @@
                 return;
             }
 
-            const sortedTasks = myTasks.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            const sortedTasks = [...myTasks].sort((a, b) => {
+                const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt);
+                const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt);
+                return dateB - dateA;
+            });
+            
             container.innerHTML = sortedTasks.map(task => renderTaskCard(task)).join('');
         }
 
@@ -975,8 +1015,13 @@
             const statusClass = `status-${task.status}`;
             const dueDate = task.dueDate ? new Date(task.dueDate).toLocaleDateString('he-IL') : 'לא הוגדר';
             
-            const isOwnTask = task.assignedTo === currentUser.id;
-            const isAdmin = currentUser.role === 'admin';
+            const createdAt = task.createdAt?.toDate ? task.createdAt.toDate() : new Date(task.createdAt);
+            const createdAtStr = createdAt.toLocaleDateString('he-IL');
+            
+            const isOwnTask = task.assignedTo === currentUser.uid;
+            const isAdmin = currentUserData.role === 'admin';
+
+            const taskJson = JSON.stringify(task).replace(/"/g, '&quot;');
 
             return `
                 <div class="task-card">
@@ -988,7 +1033,7 @@
                     <div class="task-meta">
                         <span>📅 יעד: ${dueDate}</span>
                         ${assignedUser ? `<span>👤 ${assignedUser.name}</span>` : ''}
-                        <span>🕐 נוצר: ${new Date(task.createdAt).toLocaleDateString('he-IL')}</span>
+                        <span>🕐 נוצר: ${createdAtStr}</span>
                     </div>
 
                     ${task.description ? `<div class="task-description">${task.description}</div>` : ''}
@@ -1017,7 +1062,7 @@
 
                     <div class="task-actions">
                         ${isOwnTask ? `
-                            <button class="btn btn-primary" onclick='editTask(${JSON.stringify(task)})'>✏️ ערוך</button>
+                            <button class="btn btn-primary" onclick='editTask(${taskJson})'>✏️ ערוך</button>
                             <button class="btn btn-danger" onclick="deleteTask('${task.id}')">🗑️ מחק</button>
                         ` : ''}
                         ${isAdmin && !isOwnTask ? `
@@ -1029,66 +1074,58 @@
             `;
         }
 
-        function editTask(task) {
+        window.editTask = function(task) {
             document.getElementById('editTaskModal').classList.add('active');
             document.getElementById('editTaskId').value = task.id;
             document.getElementById('editTaskTitle').value = task.title;
-            document.getElementById('editTaskDescription').value = task.description;
+            document.getElementById('editTaskDescription').value = task.description || '';
             document.getElementById('editTaskStatus').value = task.status;
-            document.getElementById('editTaskDueDate').value = task.dueDate;
+            document.getElementById('editTaskDueDate').value = task.dueDate || '';
             document.getElementById('editTaskNotes').value = '';
-        }
+        };
 
         document.getElementById('editTaskForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const taskId = document.getElementById('editTaskId').value;
-            const tasks = await StorageManager.get('tasks', false) || [];
-            const taskIndex = tasks.findIndex(t => t.id === taskId);
+            
+            try {
+                const updateData = {
+                    title: document.getElementById('editTaskTitle').value,
+                    description: document.getElementById('editTaskDescription').value,
+                    status: document.getElementById('editTaskStatus').value,
+                    dueDate: document.getElementById('editTaskDueDate').value
+                };
 
-            if (taskIndex !== -1) {
-                tasks[taskIndex].title = document.getElementById('editTaskTitle').value;
-                tasks[taskIndex].description = document.getElementById('editTaskDescription').value;
-                tasks[taskIndex].status = document.getElementById('editTaskStatus').value;
-                tasks[taskIndex].dueDate = document.getElementById('editTaskDueDate').value;
-                
                 const newNotes = document.getElementById('editTaskNotes').value;
                 if (newNotes) {
                     const timestamp = new Date().toLocaleString('he-IL');
-                    tasks[taskIndex].notes = `[${timestamp}] ${newNotes}`;
+                    updateData.notes = `[${timestamp}] ${newNotes}`;
                 }
 
-                await StorageManager.set('tasks', tasks, false);
-            }
-
-            closeModal('editTaskModal');
-            
-            if (currentUser.role === 'admin') {
-                loadAllTasks();
-            } else {
-                loadEmployeeTasks();
+                await updateDoc(doc(db, 'tasks', taskId), updateData);
+                closeModal('editTaskModal');
+            } catch (error) {
+                console.error('Error updating task:', error);
+                alert('שגיאה בעדכון משימה');
             }
         });
 
-        async function deleteTask(taskId) {
+        window.deleteTask = async function(taskId) {
             if (!confirm('האם אתה בטוח שברצונך למחוק משימה זו?')) return;
 
-            const tasks = await StorageManager.get('tasks', false) || [];
-            const filtered = tasks.filter(t => t.id !== taskId);
-            await StorageManager.set('tasks', tasks, false);
-
-            if (currentUser.role === 'admin') {
-                loadAllTasks();
-                loadEmployees();
-            } else {
-                loadEmployeeTasks();
+            try {
+                await deleteDoc(doc(db, 'tasks', taskId));
+            } catch (error) {
+                console.error('Error deleting task:', error);
+                alert('שגיאה במחיקת משימה');
             }
-        }
+        };
 
-        function openCommentModal(taskId) {
+        window.openCommentModal = function(taskId) {
             document.getElementById('addCommentModal').classList.add('active');
             document.getElementById('commentTaskId').value = taskId;
-        }
+        };
 
         document.getElementById('addCommentForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -1096,34 +1133,32 @@
             const taskId = document.getElementById('commentTaskId').value;
             const commentText = document.getElementById('commentText').value;
 
-            const tasks = await StorageManager.get('tasks', false) || [];
-            const taskIndex = tasks.findIndex(t => t.id === taskId);
-
-            if (taskIndex !== -1) {
-                if (!tasks[taskIndex].comments) {
-                    tasks[taskIndex].comments = [];
-                }
-
-                tasks[taskIndex].comments.push({
+            try {
+                const task = allTasks.find(t => t.id === taskId);
+                const comments = task.comments || [];
+                
+                comments.push({
                     id: 'comment-' + Date.now(),
-                    authorId: currentUser.id,
-                    authorName: currentUser.name,
+                    authorId: currentUser.uid,
+                    authorName: currentUserData.name,
                     text: commentText,
                     date: new Date().toISOString()
                 });
 
-                await StorageManager.set('tasks', tasks, false);
-            }
+                await updateDoc(doc(db, 'tasks', taskId), { comments });
 
-            closeModal('addCommentModal');
-            document.getElementById('addCommentForm').reset();
-            loadAllTasks();
+                closeModal('addCommentModal');
+                document.getElementById('addCommentForm').reset();
+            } catch (error) {
+                console.error('Error adding comment:', error);
+                alert('שגיאה בהוספת הערה');
+            }
         });
 
         // Utility Functions
-        function closeModal(modalId) {
+        window.closeModal = function(modalId) {
             document.getElementById(modalId).classList.remove('active');
-        }
+        };
 
         function showError(elementId, message) {
             const element = document.getElementById(elementId);
@@ -1141,7 +1176,7 @@
             });
         });
 
-        // Initialize app on load
+        // Initialize app
         initApp();
     </script>
 </body>
