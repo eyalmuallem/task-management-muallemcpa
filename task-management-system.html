@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מערכת ניהול משימות - אורי מועלם ושות'</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #2d3748;
+            font-size: 24px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-badge {
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #2d3748;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #38a169;
+        }
+
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            max-width: 400px;
+            margin: 100px auto;
+        }
+
+        .login-container h2 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .main-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #718096;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .task-card {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .task-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .task-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2d3748;
+            flex: 1;
+        }
+
+        .task-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-todo {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .status-in-progress {
+            background: #feebc8;
+            color: #c05621;
+        }
+
+        .status-done {
+            background: #c6f6d5;
+            color: #2f855a;
+        }
+
+        .task-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .task-description {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .task-notes {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            border-right: 4px solid #667eea;
+            margin-bottom: 15px;
+        }
+
+        .task-notes-title {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .employee-card {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .employee-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .employee-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .employee-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #718096;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .alert-error {
+            background: #fed7d7;
+            color: #c53030;
+            border: 1px solid #fc8181;
+        }
+
+        .alert-success {
+            background: #c6f6d5;
+            color: #2f855a;
+            border: 1px solid #9ae6b4;
+        }
+
+        .comment-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .comment {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border-right: 3px solid #667eea;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .comment-date {
+            font-size: 12px;
+            color: #718096;
+        }
+
+        .comment-text {
+            color: #4a5568;
+            line-height: 1.5;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #718096;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .task-header, .employee-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .task-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Screen -->
+        <div id="loginScreen" class="login-container">
+            <h2>🏢 אורי מועלם ושות'</h2>
+            <h3 style="text-align: center; color: #718096; margin-bottom: 30px;">מערכת ניהול משימות</h3>
+            
+            <div id="loginError" class="alert alert-error hidden"></div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>שם משתמש</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label>סיסמה</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">התחבר</button>
+            </form>
+        </div>
+
+        <!-- Main App -->
+        <div id="mainApp" class="hidden">
+            <div class="header">
+                <h1>🏢 אורי מועלם ושות' - מערכת ניהול משימות</h1>
+                <div class="user-info">
+                    <span class="user-badge" id="currentUserDisplay"></span>
+                    <button class="btn btn-secondary" onclick="logout()">התנתק</button>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <!-- Admin View -->
+                <div id="adminView" class="hidden">
+                    <div class="tabs">
+                        <button class="tab active" onclick="switchAdminTab('employees')">עובדים</button>
+                        <button class="tab" onclick="switchAdminTab('all-tasks')">כל המשימות</button>
+                    </div>
+
+                    <!-- Employees Tab -->
+                    <div id="employeesTab" class="tab-content active">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h2 style="color: #2d3748;">ניהול עובדים</h2>
+                            <button class="btn btn-primary" onclick="openAddEmployeeModal()">➕ הוסף עובד</button>
+                        </div>
+                        <div id="employeesList"></div>
+                    </div>
+
+                    <!-- All Tasks Tab -->
+                    <div id="allTasksTab" class="tab-content">
+                        <h2 style="color: #2d3748; margin-bottom: 20px;">כל המשימות במערכת</h2>
+                        <div id="allTasksList"></div>
+                    </div>
+                </div>
+
+                <!-- Employee View -->
+                <div id="employeeView" class="hidden">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2 style="color: #2d3748;">המשימות שלי</h2>
+                        <button class="btn btn-primary" onclick="openAddTaskModal()">➕ משימה חדשה</button>
+                    </div>
+                    <div id="employeeTasksList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Employee Modal -->
+    <div id="addEmployeeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">הוסף עובד חדש</h3>
+                <button class="close-modal" onclick="closeModal('addEmployeeModal')">&times;</button>
+            </div>
+            <form id="addEmployeeForm">
+                <div class="form-group">
+                    <label>שם מלא</label>
+                    <input type="text" id="employeeName" required>
+                </div>
+                <div class="form-group">
+                    <label>שם משתמש</label>
+                    <input type="text" id="employeeUsername" required>
+                </div>
+                <div class="form-group">
+                    <label>סיסמה</label>
+                    <input type="password" id="employeePassword" required>
+                </div>
+                <div class="form-group">
+                    <label>אימייל (אופציונלי)</label>
+                    <input type="email" id="employeeEmail">
+                </div>
+                <button type="submit" class="btn btn-success" style="width: 100%;">הוסף עובד</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Task Modal -->
+    <div id="addTaskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">צור משימה חדשה</h3>
+                <button class="close-modal" onclick="closeModal('addTaskModal')">&times;</button>
+            </div>
+            <form id="addTaskForm">
+                <div class="form-group" id="assignToGroup" style="display: none;">
+                    <label>הקצה לעובד</label>
+                    <select id="assignToEmployee">
+                        <option value="">עבורי</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>כותרת המשימה</label>
+                    <input type="text" id="taskTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>תיאור</label>
+                    <textarea id="taskDescription" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>תאריך יעד</label>
+                    <input type="date" id="taskDueDate">
+                </div>
+                <button type="submit" class="btn btn-success" style="width: 100%;">צור משימה</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Task Modal -->
+    <div id="editTaskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">עדכן משימה</h3>
+                <button class="close-modal" onclick="closeModal('editTaskModal')">&times;</button>
+            </div>
+            <form id="editTaskForm">
+                <input type="hidden" id="editTaskId">
+                <div class="form-group">
+                    <label>כותרת המשימה</label>
+                    <input type="text" id="editTaskTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>תיאור</label>
+                    <textarea id="editTaskDescription" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>סטטוס</label>
+                    <select id="editTaskStatus">
+                        <option value="todo">לביצוע</option>
+                        <option value="in-progress">בתהליך</option>
+                        <option value="done">הושלם</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>תאריך יעד</label>
+                    <input type="date" id="editTaskDueDate">
+                </div>
+                <div class="form-group">
+                    <label>הערות / עדכון התקדמות</label>
+                    <textarea id="editTaskNotes" rows="3" placeholder="מה עשיתי? מה נשאר? שאלות?"></textarea>
+                </div>
+                <button type="submit" class="btn btn-success" style="width: 100%;">שמור שינויים</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Comment Modal -->
+    <div id="addCommentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">הוסף הערה למשימה</h3>
+                <button class="close-modal" onclick="closeModal('addCommentModal')">&times;</button>
+            </div>
+            <form id="addCommentForm">
+                <input type="hidden" id="commentTaskId">
+                <div class="form-group">
+                    <label>ההערה שלך</label>
+                    <textarea id="commentText" rows="4" required placeholder="שאלה או הערה להתקדמות..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-success" style="width: 100%;">שלח הערה</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Storage Manager
+        class StorageManager {
+            static async init() {
+                try {
+                    // Initialize default admin if not exists
+                    const users = await this.get('users', false);
+                    if (!users) {
+                        const defaultAdmin = {
+                            id: 'admin-1',
+                            username: 'admin',
+                            password: 'admin123',
+                            name: 'אורי מועלם',
+                            role: 'admin',
+                            email: 'uri@moalem.co.il'
+                        };
+                        await this.set('users', [defaultAdmin], false);
+                    }
+
+                    // Initialize tasks if not exists
+                    const tasks = await this.get('tasks', false);
+                    if (!tasks) {
+                        await this.set('tasks', [], false);
+                    }
+                } catch (error) {
+                    console.error('Storage initialization error:', error);
+                }
+            }
+
+            static async get(key, shared = false) {
+                try {
+                    const result = await window.storage.get(key, shared);
+                    return result ? JSON.parse(result.value) : null;
+                } catch (error) {
+                    console.log(`Key ${key} not found or error:`, error);
+                    return null;
+                }
+            }
+
+            static async set(key, value, shared = false) {
+                try {
+                    const result = await window.storage.set(key, JSON.stringify(value), shared);
+                    return result !== null;
+                } catch (error) {
+                    console.error('Storage set error:', error);
+                    return false;
+                }
+            }
+
+            static async delete(key, shared = false) {
+                try {
+                    await window.storage.delete(key, shared);
+                    return true;
+                } catch (error) {
+                    console.error('Storage delete error:', error);
+                    return false;
+                }
+            }
+        }
+
+        // App State
+        let currentUser = null;
+
+        // Initialize app
+        async function initApp() {
+            await StorageManager.init();
+            checkAuth();
+        }
+
+        // Authentication
+        function checkAuth() {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showMainApp();
+            } else {
+                showLoginScreen();
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            const users = await StorageManager.get('users', false) || [];
+            const user = users.find(u => u.username === username && u.password === password);
+
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                showMainApp();
+            } else {
+                showError('loginError', 'שם משתמש או סיסמה שגויים');
+            }
+        });
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            showLoginScreen();
+        }
+
+        function showLoginScreen() {
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+        }
+
+        function showMainApp() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('currentUserDisplay').textContent = `${currentUser.name} (${currentUser.role === 'admin' ? 'מנהל' : 'עובד'})`;
+
+            if (currentUser.role === 'admin') {
+                document.getElementById('adminView').classList.remove('hidden');
+                document.getElementById('employeeView').classList.add('hidden');
+                loadEmployees();
+                loadAllTasks();
+            } else {
+                document.getElementById('adminView').classList.add('hidden');
+                document.getElementById('employeeView').classList.remove('hidden');
+                loadEmployeeTasks();
+            }
+        }
+
+        // Admin Functions
+        function switchAdminTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            if (tab === 'employees') {
+                document.querySelectorAll('.tab')[0].classList.add('active');
+                document.getElementById('employeesTab').classList.add('active');
+            } else {
+                document.querySelectorAll('.tab')[1].classList.add('active');
+                document.getElementById('allTasksTab').classList.add('active');
+            }
+        }
+
+        async function loadEmployees() {
+            const users = await StorageManager.get('users', false) || [];
+            const tasks = await StorageManager.get('tasks', false) || [];
+            const employees = users.filter(u => u.role === 'employee');
+
+            const container = document.getElementById('employeesList');
+            
+            if (employees.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">👥</div>
+                        <p>אין עובדים במערכת</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = employees.map(emp => {
+                const empTasks = tasks.filter(t => t.assignedTo === emp.id);
+                const completedTasks = empTasks.filter(t => t.status === 'done').length;
+                const inProgressTasks = empTasks.filter(t => t.status === 'in-progress').length;
+
+                return `
+                    <div class="employee-card">
+                        <div class="employee-header">
+                            <div>
+                                <div class="employee-name">👤 ${emp.name}</div>
+                                <div style="color: #718096; font-size: 14px; margin-top: 5px;">@${emp.username}</div>
+                            </div>
+                            <button class="btn btn-danger" onclick="deleteEmployee('${emp.id}')">🗑️ מחק</button>
+                        </div>
+                        <div class="employee-stats">
+                            <span>📋 משימות: ${empTasks.length}</span>
+                            <span>⏳ בתהליך: ${inProgressTasks}</span>
+                            <span>✅ הושלמו: ${completedTasks}</span>
+                        </div>
+                        <button class="btn btn-primary" style="margin-top: 15px;" onclick="openAssignTaskModal('${emp.id}', '${emp.name}')">
+                            ➕ הקצה משימה ל${emp.name}
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function loadAllTasks() {
+            const tasks = await StorageManager.get('tasks', false) || [];
+            const users = await StorageManager.get('users', false) || [];
+            const container = document.getElementById('allTasksList');
+
+            if (tasks.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <p>אין משימות במערכת</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const sortedTasks = tasks.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+            container.innerHTML = sortedTasks.map(task => {
+                const assignedUser = users.find(u => u.id === task.assignedTo);
+                return renderTaskCard(task, assignedUser);
+            }).join('');
+        }
+
+        function openAddEmployeeModal() {
+            document.getElementById('addEmployeeModal').classList.add('active');
+        }
+
+        document.getElementById('addEmployeeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const newEmployee = {
+                id: 'emp-' + Date.now(),
+                username: document.getElementById('employeeUsername').value,
+                password: document.getElementById('employeePassword').value,
+                name: document.getElementById('employeeName').value,
+                email: document.getElementById('employeeEmail').value,
+                role: 'employee'
+            };
+
+            const users = await StorageManager.get('users', false) || [];
+            
+            // Check if username exists
+            if (users.find(u => u.username === newEmployee.username)) {
+                alert('שם המשתמש כבר קיים במערכת');
+                return;
+            }
+
+            users.push(newEmployee);
+            await StorageManager.set('users', users, false);
+
+            closeModal('addEmployeeModal');
+            document.getElementById('addEmployeeForm').reset();
+            loadEmployees();
+        });
+
+        async function deleteEmployee(employeeId) {
+            if (!confirm('האם אתה בטוח שברצונך למחוק עובד זה?')) return;
+
+            const users = await StorageManager.get('users', false) || [];
+            const filtered = users.filter(u => u.id !== employeeId);
+            await StorageManager.set('users', filtered, false);
+
+            // Also delete employee's tasks
+            const tasks = await StorageManager.get('tasks', false) || [];
+            const filteredTasks = tasks.filter(t => t.assignedTo !== employeeId);
+            await StorageManager.set('tasks', filteredTasks, false);
+
+            loadEmployees();
+            loadAllTasks();
+        }
+
+        function openAssignTaskModal(employeeId, employeeName) {
+            openAddTaskModal();
+            document.getElementById('assignToEmployee').value = employeeId;
+            document.querySelector('#addTaskModal .modal-title').textContent = `משימה חדשה ל${employeeName}`;
+        }
+
+        // Task Functions
+        function openAddTaskModal() {
+            const modal = document.getElementById('addTaskModal');
+            modal.classList.add('active');
+            
+            if (currentUser.role === 'admin') {
+                document.getElementById('assignToGroup').style.display = 'block';
+                loadEmployeeOptions();
+            } else {
+                document.getElementById('assignToGroup').style.display = 'none';
+            }
+        }
+
+        async function loadEmployeeOptions() {
+            const users = await StorageManager.get('users', false) || [];
+            const employees = users.filter(u => u.role === 'employee');
+            
+            const select = document.getElementById('assignToEmployee');
+            select.innerHTML = '<option value="">עבורי</option>' + 
+                employees.map(emp => `<option value="${emp.id}">${emp.name}</option>`).join('');
+        }
+
+        document.getElementById('addTaskForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const assignTo = document.getElementById('assignToEmployee').value || currentUser.id;
+            
+            const newTask = {
+                id: 'task-' + Date.now(),
+                title: document.getElementById('taskTitle').value,
+                description: document.getElementById('taskDescription').value,
+                dueDate: document.getElementById('taskDueDate').value,
+                status: 'todo',
+                assignedTo: assignTo,
+                createdBy: currentUser.id,
+                createdAt: new Date().toISOString(),
+                notes: '',
+                comments: []
+            };
+
+            const tasks = await StorageManager.get('tasks', false) || [];
+            tasks.push(newTask);
+            await StorageManager.set('tasks', tasks, false);
+
+            closeModal('addTaskModal');
+            document.getElementById('addTaskForm').reset();
+
+            if (currentUser.role === 'admin') {
+                loadAllTasks();
+                loadEmployees();
+            } else {
+                loadEmployeeTasks();
+            }
+        });
+
+        async function loadEmployeeTasks() {
+            const tasks = await StorageManager.get('tasks', false) || [];
+            const myTasks = tasks.filter(t => t.assignedTo === currentUser.id);
+            const container = document.getElementById('employeeTasksList');
+
+            if (myTasks.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <p>אין לך משימות כרגע</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const sortedTasks = myTasks.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            container.innerHTML = sortedTasks.map(task => renderTaskCard(task)).join('');
+        }
+
+        function renderTaskCard(task, assignedUser = null) {
+            const statusLabels = {
+                'todo': 'לביצוע',
+                'in-progress': 'בתהליך',
+                'done': 'הושלם'
+            };
+
+            const statusClass = `status-${task.status}`;
+            const dueDate = task.dueDate ? new Date(task.dueDate).toLocaleDateString('he-IL') : 'לא הוגדר';
+            
+            const isOwnTask = task.assignedTo === currentUser.id;
+            const isAdmin = currentUser.role === 'admin';
+
+            return `
+                <div class="task-card">
+                    <div class="task-header">
+                        <div class="task-title">${task.title}</div>
+                        <span class="task-status ${statusClass}">${statusLabels[task.status]}</span>
+                    </div>
+                    
+                    <div class="task-meta">
+                        <span>📅 יעד: ${dueDate}</span>
+                        ${assignedUser ? `<span>👤 ${assignedUser.name}</span>` : ''}
+                        <span>🕐 נוצר: ${new Date(task.createdAt).toLocaleDateString('he-IL')}</span>
+                    </div>
+
+                    ${task.description ? `<div class="task-description">${task.description}</div>` : ''}
+
+                    ${task.notes ? `
+                        <div class="task-notes">
+                            <div class="task-notes-title">📝 הערות אחרונות:</div>
+                            <div>${task.notes}</div>
+                        </div>
+                    ` : ''}
+
+                    ${task.comments && task.comments.length > 0 ? `
+                        <div class="comment-section">
+                            <div style="font-weight: 600; margin-bottom: 10px;">💬 הערות:</div>
+                            ${task.comments.map(comment => `
+                                <div class="comment">
+                                    <div class="comment-header">
+                                        <span class="comment-author">${comment.authorName}</span>
+                                        <span class="comment-date">${new Date(comment.date).toLocaleString('he-IL')}</span>
+                                    </div>
+                                    <div class="comment-text">${comment.text}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+
+                    <div class="task-actions">
+                        ${isOwnTask ? `
+                            <button class="btn btn-primary" onclick='editTask(${JSON.stringify(task)})'>✏️ ערוך</button>
+                            <button class="btn btn-danger" onclick="deleteTask('${task.id}')">🗑️ מחק</button>
+                        ` : ''}
+                        ${isAdmin && !isOwnTask ? `
+                            <button class="btn btn-primary" onclick="openCommentModal('${task.id}')">💬 הוסף הערה</button>
+                            <button class="btn btn-danger" onclick="deleteTask('${task.id}')">🗑️ מחק</button>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function editTask(task) {
+            document.getElementById('editTaskModal').classList.add('active');
+            document.getElementById('editTaskId').value = task.id;
+            document.getElementById('editTaskTitle').value = task.title;
+            document.getElementById('editTaskDescription').value = task.description;
+            document.getElementById('editTaskStatus').value = task.status;
+            document.getElementById('editTaskDueDate').value = task.dueDate;
+            document.getElementById('editTaskNotes').value = '';
+        }
+
+        document.getElementById('editTaskForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const taskId = document.getElementById('editTaskId').value;
+            const tasks = await StorageManager.get('tasks', false) || [];
+            const taskIndex = tasks.findIndex(t => t.id === taskId);
+
+            if (taskIndex !== -1) {
+                tasks[taskIndex].title = document.getElementById('editTaskTitle').value;
+                tasks[taskIndex].description = document.getElementById('editTaskDescription').value;
+                tasks[taskIndex].status = document.getElementById('editTaskStatus').value;
+                tasks[taskIndex].dueDate = document.getElementById('editTaskDueDate').value;
+                
+                const newNotes = document.getElementById('editTaskNotes').value;
+                if (newNotes) {
+                    const timestamp = new Date().toLocaleString('he-IL');
+                    tasks[taskIndex].notes = `[${timestamp}] ${newNotes}`;
+                }
+
+                await StorageManager.set('tasks', tasks, false);
+            }
+
+            closeModal('editTaskModal');
+            
+            if (currentUser.role === 'admin') {
+                loadAllTasks();
+            } else {
+                loadEmployeeTasks();
+            }
+        });
+
+        async function deleteTask(taskId) {
+            if (!confirm('האם אתה בטוח שברצונך למחוק משימה זו?')) return;
+
+            const tasks = await StorageManager.get('tasks', false) || [];
+            const filtered = tasks.filter(t => t.id !== taskId);
+            await StorageManager.set('tasks', tasks, false);
+
+            if (currentUser.role === 'admin') {
+                loadAllTasks();
+                loadEmployees();
+            } else {
+                loadEmployeeTasks();
+            }
+        }
+
+        function openCommentModal(taskId) {
+            document.getElementById('addCommentModal').classList.add('active');
+            document.getElementById('commentTaskId').value = taskId;
+        }
+
+        document.getElementById('addCommentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const taskId = document.getElementById('commentTaskId').value;
+            const commentText = document.getElementById('commentText').value;
+
+            const tasks = await StorageManager.get('tasks', false) || [];
+            const taskIndex = tasks.findIndex(t => t.id === taskId);
+
+            if (taskIndex !== -1) {
+                if (!tasks[taskIndex].comments) {
+                    tasks[taskIndex].comments = [];
+                }
+
+                tasks[taskIndex].comments.push({
+                    id: 'comment-' + Date.now(),
+                    authorId: currentUser.id,
+                    authorName: currentUser.name,
+                    text: commentText,
+                    date: new Date().toISOString()
+                });
+
+                await StorageManager.set('tasks', tasks, false);
+            }
+
+            closeModal('addCommentModal');
+            document.getElementById('addCommentForm').reset();
+            loadAllTasks();
+        });
+
+        // Utility Functions
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function showError(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.classList.remove('hidden');
+            setTimeout(() => element.classList.add('hidden'), 3000);
+        }
+
+        // Close modal on outside click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+
+        // Initialize app on load
+        initApp();
+    </script>
+</body>
+</html>
