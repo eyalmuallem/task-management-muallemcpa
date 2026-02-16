@@ -13,81 +13,84 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f5f7fa;
             min-height: 100vh;
             padding: 20px;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
         .header {
             background: white;
-            padding: 20px 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            padding: 24px 32px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 2px solid #e2e8f0;
         }
 
         .header h1 {
-            color: #2d3748;
-            font-size: 24px;
+            color: #1a202c;
+            font-size: 22px;
+            font-weight: 600;
         }
 
         .user-info {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 16px;
         }
 
         .user-badge {
-            background: #667eea;
-            color: white;
+            background: #edf2f7;
+            color: #2d3748;
             padding: 8px 16px;
-            border-radius: 20px;
+            border-radius: 6px;
             font-size: 14px;
+            font-weight: 500;
         }
 
         .btn {
-            padding: 10px 20px;
+            padding: 10px 18px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
             font-size: 14px;
-            font-weight: 600;
-            transition: all 0.3s;
+            font-weight: 500;
+            transition: all 0.2s;
         }
 
         .btn-primary {
-            background: #667eea;
+            background: #3182ce;
             color: white;
         }
 
         .btn-primary:hover {
-            background: #5568d3;
+            background: #2c5aa0;
         }
 
         .btn-secondary {
-            background: #e2e8f0;
+            background: #edf2f7;
             color: #2d3748;
         }
 
         .btn-secondary:hover {
-            background: #cbd5e0;
+            background: #e2e8f0;
         }
 
         .btn-danger {
-            background: #f56565;
+            background: #fc8181;
             color: white;
         }
 
         .btn-danger:hover {
-            background: #e53e3e;
+            background: #f56565;
         }
 
         .btn-success {
@@ -99,19 +102,32 @@
             background: #38a169;
         }
 
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+
         .login-container {
             background: white;
             padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            max-width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 420px;
             margin: 100px auto;
         }
 
         .login-container h2 {
             text-align: center;
-            color: #2d3748;
-            margin-bottom: 30px;
+            color: #1a202c;
+            margin-bottom: 8px;
+            font-size: 24px;
+        }
+
+        .login-subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 32px;
+            font-size: 14px;
         }
 
         .form-group {
@@ -122,52 +138,53 @@
             display: block;
             margin-bottom: 8px;
             color: #4a5568;
-            font-weight: 600;
+            font-weight: 500;
+            font-size: 14px;
         }
 
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e2e8f0;
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
             border-radius: 6px;
             font-size: 14px;
-            transition: border-color 0.3s;
+            transition: border-color 0.2s;
         }
 
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #3182ce;
         }
 
         .main-content {
             background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 28px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
         }
 
         .tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #e2e8f0;
+            gap: 8px;
+            margin-bottom: 28px;
+            border-bottom: 1px solid #e2e8f0;
         }
 
         .tab {
-            padding: 12px 24px;
+            padding: 12px 20px;
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
+            font-size: 15px;
+            font-weight: 500;
             color: #718096;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
         }
 
         .tab.active {
-            color: #667eea;
-            border-bottom-color: #667eea;
+            color: #3182ce;
+            border-bottom-color: #3182ce;
         }
 
         .tab-content {
@@ -178,119 +195,225 @@
             display: block;
         }
 
-        .task-card {
-            background: #f7fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 15px;
-            transition: all 0.3s;
-        }
-
-        .task-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            border-color: #667eea;
-        }
-
-        .task-header {
+        .section-header {
             display: flex;
             justify-content: space-between;
-            align-items: start;
-            margin-bottom: 15px;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
-        .task-title {
+        .section-title {
+            color: #1a202c;
             font-size: 18px;
-            font-weight: 700;
-            color: #2d3748;
-            flex: 1;
-        }
-
-        .task-status {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
             font-weight: 600;
         }
 
-        .status-todo {
-            background: #fed7d7;
-            color: #c53030;
+        /* Task Board Styles */
+        .task-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
         }
 
-        .status-in-progress {
-            background: #feebc8;
-            color: #c05621;
+        .board-column {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 16px;
+            min-height: 400px;
         }
 
-        .status-done {
-            background: #c6f6d5;
-            color: #2f855a;
+        .board-column-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .board-column-title {
+            font-weight: 600;
+            font-size: 15px;
+            color: #2d3748;
+        }
+
+        .board-column-count {
+            background: white;
+            color: #718096;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .board-column.todo .board-column-header {
+            border-bottom-color: #fc8181;
+        }
+
+        .board-column.in-progress .board-column-header {
+            border-bottom-color: #f6ad55;
+        }
+
+        .board-column.done .board-column-header {
+            border-bottom-color: #68d391;
+        }
+
+        /* Task Card Styles */
+        .task-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .task-card:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-color: #cbd5e0;
+        }
+
+        .task-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .task-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a202c;
+            flex: 1;
+            line-height: 1.4;
         }
 
         .task-meta {
             display: flex;
-            gap: 20px;
-            margin-bottom: 10px;
-            font-size: 14px;
+            gap: 12px;
+            margin-bottom: 8px;
+            font-size: 13px;
             color: #718096;
             flex-wrap: wrap;
         }
 
+        .task-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
         .task-description {
             color: #4a5568;
-            line-height: 1.6;
-            margin-bottom: 15px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            font-size: 14px;
         }
 
         .task-notes {
-            background: white;
-            padding: 12px;
-            border-radius: 6px;
-            border-right: 4px solid #667eea;
-            margin-bottom: 15px;
+            background: #f7fafc;
+            padding: 10px;
+            border-radius: 4px;
+            border-right: 3px solid #3182ce;
+            margin-bottom: 12px;
+            font-size: 13px;
         }
 
         .task-notes-title {
             font-weight: 600;
             color: #2d3748;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
+            font-size: 13px;
         }
 
         .task-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e2e8f0;
         }
 
+        /* Employee Card Styles */
         .employee-card {
-            background: #f7fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
             padding: 20px;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
+            transition: all 0.2s;
+        }
+
+        .employee-card:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .employee-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 16px;
         }
 
         .employee-name {
-            font-size: 18px;
-            font-weight: 700;
-            color: #2d3748;
+            font-size: 17px;
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .employee-email {
+            color: #718096;
+            font-size: 14px;
+            margin-top: 4px;
         }
 
         .employee-stats {
-            display: flex;
-            gap: 15px;
-            font-size: 14px;
-            color: #718096;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
         }
 
+        .stat-card {
+            background: #f7fafc;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #718096;
+            margin-top: 4px;
+        }
+
+        .stat-card.todo .stat-number {
+            color: #fc8181;
+        }
+
+        .stat-card.in-progress .stat-number {
+            color: #f6ad55;
+        }
+
+        .stat-card.done .stat-number {
+            color: #48bb78;
+        }
+
+        .employee-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -310,8 +433,8 @@
 
         .modal-content {
             background: white;
-            padding: 30px;
-            border-radius: 10px;
+            padding: 28px;
+            border-radius: 8px;
             max-width: 600px;
             width: 90%;
             max-height: 90vh;
@@ -322,13 +445,15 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e2e8f0;
         }
 
         .modal-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: #2d3748;
+            font-size: 19px;
+            font-weight: 600;
+            color: #1a202c;
         }
 
         .close-modal {
@@ -337,12 +462,23 @@
             font-size: 24px;
             cursor: pointer;
             color: #718096;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+
+        .close-modal:hover {
+            background: #f7fafc;
         }
 
         .alert {
             padding: 12px 16px;
             border-radius: 6px;
             margin-bottom: 20px;
+            font-size: 14px;
         }
 
         .alert-error {
@@ -358,17 +494,17 @@
         }
 
         .comment-section {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 2px solid #e2e8f0;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e2e8f0;
         }
 
         .comment {
-            background: white;
+            background: #f7fafc;
             padding: 12px;
             border-radius: 6px;
             margin-bottom: 10px;
-            border-right: 3px solid #667eea;
+            border-right: 3px solid #3182ce;
         }
 
         .comment-header {
@@ -379,7 +515,8 @@
 
         .comment-author {
             font-weight: 600;
-            color: #2d3748;
+            color: #1a202c;
+            font-size: 14px;
         }
 
         .comment-date {
@@ -390,6 +527,7 @@
         .comment-text {
             color: #4a5568;
             line-height: 1.5;
+            font-size: 14px;
         }
 
         .hidden {
@@ -402,20 +540,21 @@
             color: #718096;
         }
 
-        .empty-state-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
+        .empty-state-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #4a5568;
         }
 
         .loading {
             text-align: center;
             padding: 40px;
-            color: #667eea;
+            color: #3182ce;
         }
 
         .loading-spinner {
-            border: 4px solid #f3f4f6;
-            border-top: 4px solid #667eea;
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #3182ce;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -428,13 +567,41 @@
             100% { transform: rotate(360deg); }
         }
 
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-todo {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .badge-in-progress {
+            background: #feebc8;
+            color: #c05621;
+        }
+
+        .badge-done {
+            background: #c6f6d5;
+            color: #2f855a;
+        }
+
+        @media (max-width: 1024px) {
+            .task-board {
+                grid-template-columns: 1fr;
+            }
+        }
+
         @media (max-width: 768px) {
-            .task-header, .employee-header {
-                flex-direction: column;
-                gap: 10px;
+            .employee-stats {
+                grid-template-columns: 1fr;
             }
 
-            .task-actions {
+            .task-actions, .employee-actions {
                 flex-direction: column;
             }
 
@@ -454,15 +621,15 @@
 
         <!-- Login Screen -->
         <div id="loginScreen" class="login-container hidden">
-            <h2>🏢 אורי מועלם ושות'</h2>
-            <h3 style="text-align: center; color: #718096; margin-bottom: 30px;">מערכת ניהול משימות</h3>
+            <h2>אורי מועלם ושות'</h2>
+            <p class="login-subtitle">מערכת ניהול משימות</p>
             
             <div id="loginError" class="alert alert-error hidden"></div>
             
             <form id="loginForm">
                 <div class="form-group">
                     <label>אימייל</label>
-                    <input type="email" id="email" required placeholder="admin@moalem.co.il">
+                    <input type="email" id="email" required placeholder="email@example.com">
                 </div>
                 <div class="form-group">
                     <label>סיסמה</label>
@@ -475,7 +642,7 @@
         <!-- Main App -->
         <div id="mainApp" class="hidden">
             <div class="header">
-                <h1>🏢 אורי מועלם ושות' - מערכת ניהול משימות</h1>
+                <h1>מערכת ניהול משימות - אורי מועלם ושות'</h1>
                 <div class="user-info">
                     <span class="user-badge" id="currentUserDisplay"></span>
                     <button class="btn btn-secondary" onclick="logout()">התנתק</button>
@@ -486,33 +653,121 @@
                 <!-- Admin View -->
                 <div id="adminView" class="hidden">
                     <div class="tabs">
-                        <button class="tab active" onclick="switchAdminTab('employees')">עובדים</button>
+                        <button class="tab active" onclick="switchAdminTab('board')">לוח משימות</button>
+                        <button class="tab" onclick="switchAdminTab('employees')">עובדים</button>
                         <button class="tab" onclick="switchAdminTab('all-tasks')">כל המשימות</button>
                     </div>
 
+                    <!-- Task Board Tab -->
+                    <div id="boardTab" class="tab-content active">
+                        <div class="section-header">
+                            <h2 class="section-title">לוח משימות פתוחות</h2>
+                        </div>
+                        <div class="task-board">
+                            <div class="board-column todo">
+                                <div class="board-column-header">
+                                    <span class="board-column-title">לביצוע</span>
+                                    <span class="board-column-count" id="todoCount">0</span>
+                                </div>
+                                <div id="todoTasks"></div>
+                            </div>
+                            <div class="board-column in-progress">
+                                <div class="board-column-header">
+                                    <span class="board-column-title">בתהליך</span>
+                                    <span class="board-column-count" id="inProgressCount">0</span>
+                                </div>
+                                <div id="inProgressTasks"></div>
+                            </div>
+                            <div class="board-column done">
+                                <div class="board-column-header">
+                                    <span class="board-column-title">הושלם</span>
+                                    <span class="board-column-count" id="doneCount">0</span>
+                                </div>
+                                <div id="doneTasks"></div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Employees Tab -->
-                    <div id="employeesTab" class="tab-content active">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                            <h2 style="color: #2d3748;">ניהול עובדים</h2>
-                            <button class="btn btn-primary" onclick="openAddEmployeeModal()">➕ הוסף עובד</button>
+                    <div id="employeesTab" class="tab-content">
+                        <div class="section-header">
+                            <h2 class="section-title">ניהול עובדים</h2>
+                            <button class="btn btn-primary" onclick="openAddEmployeeModal()">הוסף עובד</button>
                         </div>
                         <div id="employeesList"></div>
                     </div>
 
                     <!-- All Tasks Tab -->
                     <div id="allTasksTab" class="tab-content">
-                        <h2 style="color: #2d3748; margin-bottom: 20px;">כל המשימות במערכת</h2>
+                        <div class="section-header">
+                            <h2 class="section-title">כל המשימות במערכת</h2>
+                        </div>
                         <div id="allTasksList"></div>
                     </div>
                 </div>
 
                 <!-- Employee View -->
                 <div id="employeeView" class="hidden">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h2 style="color: #2d3748;">המשימות שלי</h2>
-                        <button class="btn btn-primary" onclick="openAddTaskModal()">➕ משימה חדשה</button>
+                    <div class="section-header">
+                        <h2 class="section-title">המשימות שלי</h2>
+                        <button class="btn btn-primary" onclick="openAddTaskModal()">משימה חדשה</button>
                     </div>
-                    <div id="employeeTasksList"></div>
+                    <div class="task-board">
+                        <div class="board-column todo">
+                            <div class="board-column-header">
+                                <span class="board-column-title">לביצוע</span>
+                                <span class="board-column-count" id="myTodoCount">0</span>
+                            </div>
+                            <div id="myTodoTasks"></div>
+                        </div>
+                        <div class="board-column in-progress">
+                            <div class="board-column-header">
+                                <span class="board-column-title">בתהליך</span>
+                                <span class="board-column-count" id="myInProgressCount">0</span>
+                            </div>
+                            <div id="myInProgressTasks"></div>
+                        </div>
+                        <div class="board-column done">
+                            <div class="board-column-header">
+                                <span class="board-column-title">הושלם</span>
+                                <span class="board-column-count" id="myDoneCount">0</span>
+                            </div>
+                            <div id="myDoneTasks"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employee Tasks Modal -->
+    <div id="employeeTasksModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="employeeTasksTitle">משימות עובד</h3>
+                <button class="close-modal" onclick="closeModal('employeeTasksModal')">&times;</button>
+            </div>
+            <div class="task-board">
+                <div class="board-column todo">
+                    <div class="board-column-header">
+                        <span class="board-column-title">לביצוע</span>
+                        <span class="board-column-count" id="empTodoCount">0</span>
+                    </div>
+                    <div id="empTodoTasks"></div>
+                </div>
+                <div class="board-column in-progress">
+                    <div class="board-column-header">
+                        <span class="board-column-title">בתהליך</span>
+                        <span class="board-column-count" id="empInProgressCount">0</span>
+                    </div>
+                    <div id="empInProgressTasks"></div>
+                </div>
+                <div class="board-column done">
+                    <div class="board-column-header">
+                        <span class="board-column-title">הושלם</span>
+                        <span class="board-column-count" id="empDoneCount">0</span>
+                    </div>
+                    <div id="empDoneTasks"></div>
                 </div>
             </div>
         </div>
@@ -637,7 +892,7 @@
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
         import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, getDoc, query, where, onSnapshot, setDoc, serverTimestamp, Timestamp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
-        // Firebase configuration - YOUR PROJECT
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDOpsv-fuEN79loRfc6nZZAXxXBiQe4lzY",
             authDomain: "moalem-tasks.firebaseapp.com",
@@ -663,7 +918,6 @@
 
         // Initialize app
         async function initApp() {
-            // Listen to auth state changes
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
                     currentUser = user;
@@ -679,15 +933,13 @@
             });
         }
 
-        // Load user data from Firestore
+        // Load user data
         async function loadUserData() {
             try {
                 const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
                 if (userDoc.exists()) {
                     currentUserData = { id: currentUser.uid, ...userDoc.data() };
                 } else {
-                    // Create user document if it doesn't exist
-                    // Check if user is admin (first user or specific email)
                     const usersSnapshot = await getDocs(collection(db, 'users'));
                     const isFirstUser = usersSnapshot.empty;
                     const isAdmin = isFirstUser || currentUser.email === 'admin@moalem.co.il';
@@ -703,7 +955,6 @@
                     await setDoc(doc(db, 'users', currentUser.uid), currentUserData);
                 }
 
-                // Subscribe to real-time updates
                 subscribeToUpdates();
             } catch (error) {
                 console.error('Error loading user data:', error);
@@ -713,7 +964,6 @@
 
         // Subscribe to real-time updates
         function subscribeToUpdates() {
-            // Subscribe to users collection
             unsubscribeUsers = onSnapshot(collection(db, 'users'), (snapshot) => {
                 allUsers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 if (currentUserData?.role === 'admin') {
@@ -721,10 +971,10 @@
                 }
             });
 
-            // Subscribe to tasks collection
             unsubscribeTasks = onSnapshot(collection(db, 'tasks'), (snapshot) => {
                 allTasks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 if (currentUserData?.role === 'admin') {
+                    loadTaskBoard();
                     loadAllTasks();
                 } else {
                     loadEmployeeTasks();
@@ -754,10 +1004,8 @@
 
         window.logout = async function() {
             try {
-                // Unsubscribe from real-time updates
                 if (unsubscribeTasks) unsubscribeTasks();
                 if (unsubscribeUsers) unsubscribeUsers();
-                
                 await signOut(auth);
             } catch (error) {
                 console.error('Logout error:', error);
@@ -794,66 +1042,140 @@
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
-            if (tab === 'employees') {
+            if (tab === 'board') {
                 document.querySelectorAll('.tab')[0].classList.add('active');
+                document.getElementById('boardTab').classList.add('active');
+            } else if (tab === 'employees') {
+                document.querySelectorAll('.tab')[1].classList.add('active');
                 document.getElementById('employeesTab').classList.add('active');
             } else {
-                document.querySelectorAll('.tab')[1].classList.add('active');
+                document.querySelectorAll('.tab')[2].classList.add('active');
                 document.getElementById('allTasksTab').classList.add('active');
             }
         };
 
+        // Load Task Board (all open tasks)
+        function loadTaskBoard() {
+            const todoTasks = allTasks.filter(t => t.status === 'todo');
+            const inProgressTasks = allTasks.filter(t => t.status === 'in-progress');
+            const doneTasks = allTasks.filter(t => t.status === 'done');
+
+            document.getElementById('todoCount').textContent = todoTasks.length;
+            document.getElementById('inProgressCount').textContent = inProgressTasks.length;
+            document.getElementById('doneCount').textContent = doneTasks.length;
+
+            document.getElementById('todoTasks').innerHTML = todoTasks.length > 0 
+                ? todoTasks.map(task => renderBoardTaskCard(task)).join('')
+                : '<div class="empty-state"><p class="empty-state-title">אין משימות</p></div>';
+
+            document.getElementById('inProgressTasks').innerHTML = inProgressTasks.length > 0
+                ? inProgressTasks.map(task => renderBoardTaskCard(task)).join('')
+                : '<div class="empty-state"><p class="empty-state-title">אין משימות</p></div>';
+
+            document.getElementById('doneTasks').innerHTML = doneTasks.length > 0
+                ? doneTasks.map(task => renderBoardTaskCard(task)).join('')
+                : '<div class="empty-state"><p class="empty-state-title">אין משימות</p></div>';
+        }
+
+        // Render task card for board
+        function renderBoardTaskCard(task) {
+            const assignedUser = allUsers.find(u => u.id === task.assignedTo);
+            const dueDate = task.dueDate ? new Date(task.dueDate).toLocaleDateString('he-IL') : 'ללא תאריך';
+            const taskJson = JSON.stringify(task).replace(/"/g, '&quot;');
+
+            return `
+                <div class="task-card" onclick='editTask(${taskJson})'>
+                    <div class="task-title">${task.title}</div>
+                    <div class="task-meta">
+                        ${assignedUser ? `<span class="task-meta-item">${assignedUser.name}</span>` : ''}
+                        <span class="task-meta-item">${dueDate}</span>
+                    </div>
+                    ${task.description ? `<div class="task-description">${task.description.substring(0, 80)}${task.description.length > 80 ? '...' : ''}</div>` : ''}
+                </div>
+            `;
+        }
+
+        // Load employees with correct stats
         function loadEmployees() {
             const employees = allUsers.filter(u => u.role === 'employee');
             const container = document.getElementById('employeesList');
             
             if (employees.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">👥</div>
-                        <p>אין עובדים במערכת</p>
-                    </div>
-                `;
+                container.innerHTML = '<div class="empty-state"><p class="empty-state-title">אין עובדים במערכת</p></div>';
                 return;
             }
 
             container.innerHTML = employees.map(emp => {
                 const empTasks = allTasks.filter(t => t.assignedTo === emp.id);
-                const completedTasks = empTasks.filter(t => t.status === 'done').length;
+                const todoTasks = empTasks.filter(t => t.status === 'todo').length;
                 const inProgressTasks = empTasks.filter(t => t.status === 'in-progress').length;
+                const completedTasks = empTasks.filter(t => t.status === 'done').length;
 
                 return `
                     <div class="employee-card">
                         <div class="employee-header">
                             <div>
-                                <div class="employee-name">👤 ${emp.name}</div>
-                                <div style="color: #718096; font-size: 14px; margin-top: 5px;">${emp.email}</div>
+                                <div class="employee-name">${emp.name}</div>
+                                <div class="employee-email">${emp.email}</div>
                             </div>
-                            <button class="btn btn-danger" onclick="deleteEmployee('${emp.id}')">🗑️ מחק</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteEmployee('${emp.id}')">מחק</button>
                         </div>
                         <div class="employee-stats">
-                            <span>📋 משימות: ${empTasks.length}</span>
-                            <span>⏳ בתהליך: ${inProgressTasks}</span>
-                            <span>✅ הושלמו: ${completedTasks}</span>
+                            <div class="stat-card todo">
+                                <div class="stat-number">${todoTasks}</div>
+                                <div class="stat-label">לביצוע</div>
+                            </div>
+                            <div class="stat-card in-progress">
+                                <div class="stat-number">${inProgressTasks}</div>
+                                <div class="stat-label">בתהליך</div>
+                            </div>
+                            <div class="stat-card done">
+                                <div class="stat-number">${completedTasks}</div>
+                                <div class="stat-label">הושלם</div>
+                            </div>
                         </div>
-                        <button class="btn btn-primary" style="margin-top: 15px;" onclick="openAssignTaskModal('${emp.id}', '${emp.name}')">
-                            ➕ הקצה משימה ל${emp.name}
-                        </button>
+                        <div class="employee-actions">
+                            <button class="btn btn-primary" onclick="viewEmployeeTasks('${emp.id}', '${emp.name}')" style="flex: 1;">צפה במשימות</button>
+                            <button class="btn btn-secondary" onclick="openAssignTaskModal('${emp.id}', '${emp.name}')">הקצה משימה</button>
+                        </div>
                     </div>
                 `;
             }).join('');
         }
 
+        // View employee tasks
+        window.viewEmployeeTasks = function(employeeId, employeeName) {
+            document.getElementById('employeeTasksTitle').textContent = `משימות של ${employeeName}`;
+            document.getElementById('employeeTasksModal').classList.add('active');
+
+            const empTasks = allTasks.filter(t => t.assignedTo === employeeId);
+            const todoTasks = empTasks.filter(t => t.status === 'todo');
+            const inProgressTasks = empTasks.filter(t => t.status === 'in-progress');
+            const doneTasks = empTasks.filter(t => t.status === 'done');
+
+            document.getElementById('empTodoCount').textContent = todoTasks.length;
+            document.getElementById('empInProgressCount').textContent = inProgressTasks.length;
+            document.getElementById('empDoneCount').textContent = doneTasks.length;
+
+            document.getElementById('empTodoTasks').innerHTML = todoTasks.length > 0
+                ? todoTasks.map(task => renderBoardTaskCard(task)).join('')
+                : '<div class="empty-state"><p class="empty-state-title">אין משימות</p></div>';
+
+            document.getElementById('empInProgressTasks').innerHTML = inProgressTasks.length > 0
+                ? inProgressTasks.map(task => renderBoardTaskCard(task)).join('')
+                : '<div class="empty-state"><p class="empty-state-title">אין משימות</p></div>';
+
+            document.getElementById('empDoneTasks').innerHTML = doneTasks.length > 0
+                ? doneTasks.map(task => renderBoardTaskCard(task)).join('')
+                : '<div class="empty-state"><p class="empty-state-title">אין משימות</p></div>';
+        };
+
+        // Load all tasks
         function loadAllTasks() {
             const container = document.getElementById('allTasksList');
 
             if (allTasks.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📝</div>
-                        <p>אין משימות במערכת</p>
-                    </div>
-                `;
+                container.innerHTML = '<div class="empty-state"><p class="empty-state-title">אין משימות במערכת</p></div>';
                 return;
             }
 
@@ -865,10 +1187,141 @@
             
             container.innerHTML = sortedTasks.map(task => {
                 const assignedUser = allUsers.find(u => u.id === task.assignedTo);
-                return renderTaskCard(task, assignedUser);
+                return renderDetailedTaskCard(task, assignedUser);
             }).join('');
         }
 
+        // Render detailed task card
+        function renderDetailedTaskCard(task, assignedUser = null) {
+            const statusLabels = {
+                'todo': 'לביצוע',
+                'in-progress': 'בתהליך',
+                'done': 'הושלם'
+            };
+
+            const statusClass = task.status;
+            const dueDate = task.dueDate ? new Date(task.dueDate).toLocaleDateString('he-IL') : 'לא הוגדר';
+            const createdAt = task.createdAt?.toDate ? task.createdAt.toDate() : new Date(task.createdAt);
+            const createdAtStr = createdAt.toLocaleDateString('he-IL');
+            
+            const isOwnTask = task.assignedTo === currentUser.uid;
+            const isAdmin = currentUserData.role === 'admin';
+            const taskJson = JSON.stringify(task).replace(/"/g, '&quot;');
+            const canComplete = isOwnTask && task.status !== 'done';
+
+            return `
+                <div class="task-card">
+                    <div class="task-card-header">
+                        <div class="task-title">${task.title}</div>
+                        <span class="badge badge-${statusClass}">${statusLabels[task.status]}</span>
+                    </div>
+                    
+                    <div class="task-meta">
+                        <span class="task-meta-item">יעד: ${dueDate}</span>
+                        ${assignedUser ? `<span class="task-meta-item">${assignedUser.name}</span>` : ''}
+                        <span class="task-meta-item">נוצר: ${createdAtStr}</span>
+                    </div>
+
+                    ${task.description ? `<div class="task-description">${task.description}</div>` : ''}
+
+                    ${task.notes ? `
+                        <div class="task-notes">
+                            <div class="task-notes-title">הערות אחרונות:</div>
+                            <div>${task.notes}</div>
+                        </div>
+                    ` : ''}
+
+                    ${task.comments && task.comments.length > 0 ? `
+                        <div class="comment-section">
+                            <div style="font-weight: 600; margin-bottom: 10px; font-size: 14px;">הערות:</div>
+                            ${task.comments.map(comment => `
+                                <div class="comment">
+                                    <div class="comment-header">
+                                        <span class="comment-author">${comment.authorName}</span>
+                                        <span class="comment-date">${new Date(comment.date).toLocaleString('he-IL')}</span>
+                                    </div>
+                                    <div class="comment-text">${comment.text}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+
+                    <div class="task-actions">
+                        ${canComplete ? `<button class="btn btn-success btn-sm" onclick="completeTask('${task.id}')">סיום משימה</button>` : ''}
+                        ${isOwnTask ? `
+                            <button class="btn btn-primary btn-sm" onclick='editTask(${taskJson})'>ערוך</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteTask('${task.id}')">מחק</button>
+                        ` : ''}
+                        ${isAdmin && !isOwnTask ? `
+                            <button class="btn btn-primary btn-sm" onclick="openCommentModal('${task.id}')">הוסף הערה</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteTask('${task.id}')">מחק</button>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Complete task
+        window.completeTask = async function(taskId) {
+            if (!confirm('האם לסמן משימה זו כהושלמה?')) return;
+
+            try {
+                await updateDoc(doc(db, 'tasks', taskId), {
+                    status: 'done',
+                    completedAt: serverTimestamp()
+                });
+            } catch (error) {
+                console.error('Error completing task:', error);
+                alert('שגיאה בסיום משימה');
+            }
+        };
+
+        // Load employee tasks (for employee view)
+        function loadEmployeeTasks() {
+            const myTasks = allTasks.filter(t => t.assignedTo === currentUser.uid);
+            const todoTasks = myTasks.filter(t => t.status === 'todo');
+            const inProgressTasks = myTasks.filter(t => t.status === 'in-progress');
+            const doneTasks = myTasks.filter(t => t.status === 'done');
+
+            document.getElementById('myTodoCount').textContent = todoTasks.length;
+            document.getElementById('myInProgressCount').textContent = inProgressTasks.length;
+            document.getElementById('myDoneCount').textContent = doneTasks.length;
+
+            document.getElementById('myTodoTasks').innerHTML = todoTasks.length > 0
+                ? todoTasks.map(task => renderEmployeeTaskCard(task)).join('')
+                : '<div class="empty-state"><p class="empty-state-title">אין משימות</p></div>';
+
+            document.getElementById('myInProgressTasks').innerHTML = inProgressTasks.length > 0
+                ? inProgressTasks.map(task => renderEmployeeTaskCard(task)).join('')
+                : '<div class="empty-state"><p class="empty-state-title">אין משימות</p></div>';
+
+            document.getElementById('myDoneTasks').innerHTML = doneTasks.length > 0
+                ? doneTasks.map(task => renderEmployeeTaskCard(task)).join('')
+                : '<div class="empty-state"><p class="empty-state-title">אין משימות</p></div>';
+        }
+
+        // Render employee task card
+        function renderEmployeeTaskCard(task) {
+            const dueDate = task.dueDate ? new Date(task.dueDate).toLocaleDateString('he-IL') : 'ללא תאריך';
+            const taskJson = JSON.stringify(task).replace(/"/g, '&quot;');
+            const canComplete = task.status !== 'done';
+
+            return `
+                <div class="task-card">
+                    <div class="task-title">${task.title}</div>
+                    <div class="task-meta">
+                        <span class="task-meta-item">${dueDate}</span>
+                    </div>
+                    ${task.description ? `<div class="task-description">${task.description.substring(0, 100)}${task.description.length > 100 ? '...' : ''}</div>` : ''}
+                    <div class="task-actions">
+                        ${canComplete ? `<button class="btn btn-success btn-sm" onclick="completeTask('${task.id}')">סיום</button>` : ''}
+                        <button class="btn btn-primary btn-sm" onclick='editTask(${taskJson})'>ערוך</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Modal functions
         window.openAddEmployeeModal = function() {
             document.getElementById('addEmployeeModal').classList.add('active');
         };
@@ -881,10 +1334,7 @@
             const password = document.getElementById('employeePassword').value;
 
             try {
-                // Create auth user
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                
-                // Create user document
                 await setDoc(doc(db, 'users', userCredential.user.uid), {
                     name: name,
                     email: email,
@@ -892,7 +1342,6 @@
                     createdAt: serverTimestamp()
                 });
 
-                // Sign back in as admin
                 await signInWithEmailAndPassword(auth, currentUserData.email, 'temp');
 
                 closeModal('addEmployeeModal');
@@ -914,10 +1363,8 @@
             if (!confirm('האם אתה בטוח שברצונך למחוק עובד זה? כל המשימות שלו יימחקו!')) return;
 
             try {
-                // Delete user document
                 await deleteDoc(doc(db, 'users', employeeId));
 
-                // Delete all employee's tasks
                 const employeeTasks = allTasks.filter(t => t.assignedTo === employeeId);
                 for (const task of employeeTasks) {
                     await deleteDoc(doc(db, 'tasks', task.id));
@@ -936,7 +1383,6 @@
             document.querySelector('#addTaskModal .modal-title').textContent = `משימה חדשה ל${employeeName}`;
         };
 
-        // Task Functions
         window.openAddTaskModal = function() {
             const modal = document.getElementById('addTaskModal');
             modal.classList.add('active');
@@ -981,98 +1427,6 @@
                 alert('שגיאה ביצירת משימה');
             }
         });
-
-        function loadEmployeeTasks() {
-            const myTasks = allTasks.filter(t => t.assignedTo === currentUser.uid);
-            const container = document.getElementById('employeeTasksList');
-
-            if (myTasks.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📝</div>
-                        <p>אין לך משימות כרגע</p>
-                    </div>
-                `;
-                return;
-            }
-
-            const sortedTasks = [...myTasks].sort((a, b) => {
-                const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt);
-                const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt);
-                return dateB - dateA;
-            });
-            
-            container.innerHTML = sortedTasks.map(task => renderTaskCard(task)).join('');
-        }
-
-        function renderTaskCard(task, assignedUser = null) {
-            const statusLabels = {
-                'todo': 'לביצוע',
-                'in-progress': 'בתהליך',
-                'done': 'הושלם'
-            };
-
-            const statusClass = `status-${task.status}`;
-            const dueDate = task.dueDate ? new Date(task.dueDate).toLocaleDateString('he-IL') : 'לא הוגדר';
-            
-            const createdAt = task.createdAt?.toDate ? task.createdAt.toDate() : new Date(task.createdAt);
-            const createdAtStr = createdAt.toLocaleDateString('he-IL');
-            
-            const isOwnTask = task.assignedTo === currentUser.uid;
-            const isAdmin = currentUserData.role === 'admin';
-
-            const taskJson = JSON.stringify(task).replace(/"/g, '&quot;');
-
-            return `
-                <div class="task-card">
-                    <div class="task-header">
-                        <div class="task-title">${task.title}</div>
-                        <span class="task-status ${statusClass}">${statusLabels[task.status]}</span>
-                    </div>
-                    
-                    <div class="task-meta">
-                        <span>📅 יעד: ${dueDate}</span>
-                        ${assignedUser ? `<span>👤 ${assignedUser.name}</span>` : ''}
-                        <span>🕐 נוצר: ${createdAtStr}</span>
-                    </div>
-
-                    ${task.description ? `<div class="task-description">${task.description}</div>` : ''}
-
-                    ${task.notes ? `
-                        <div class="task-notes">
-                            <div class="task-notes-title">📝 הערות אחרונות:</div>
-                            <div>${task.notes}</div>
-                        </div>
-                    ` : ''}
-
-                    ${task.comments && task.comments.length > 0 ? `
-                        <div class="comment-section">
-                            <div style="font-weight: 600; margin-bottom: 10px;">💬 הערות:</div>
-                            ${task.comments.map(comment => `
-                                <div class="comment">
-                                    <div class="comment-header">
-                                        <span class="comment-author">${comment.authorName}</span>
-                                        <span class="comment-date">${new Date(comment.date).toLocaleString('he-IL')}</span>
-                                    </div>
-                                    <div class="comment-text">${comment.text}</div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    ` : ''}
-
-                    <div class="task-actions">
-                        ${isOwnTask ? `
-                            <button class="btn btn-primary" onclick='editTask(${taskJson})'>✏️ ערוך</button>
-                            <button class="btn btn-danger" onclick="deleteTask('${task.id}')">🗑️ מחק</button>
-                        ` : ''}
-                        ${isAdmin && !isOwnTask ? `
-                            <button class="btn btn-primary" onclick="openCommentModal('${task.id}')">💬 הוסף הערה</button>
-                            <button class="btn btn-danger" onclick="deleteTask('${task.id}')">🗑️ מחק</button>
-                        ` : ''}
-                    </div>
-                </div>
-            `;
-        }
 
         window.editTask = function(task) {
             document.getElementById('editTaskModal').classList.add('active');
@@ -1155,7 +1509,6 @@
             }
         });
 
-        // Utility Functions
         window.closeModal = function(modalId) {
             document.getElementById(modalId).classList.remove('active');
         };
@@ -1167,7 +1520,6 @@
             setTimeout(() => element.classList.add('hidden'), 3000);
         }
 
-        // Close modal on outside click
         document.querySelectorAll('.modal').forEach(modal => {
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
@@ -1176,7 +1528,6 @@
             });
         });
 
-        // Initialize app
         initApp();
     </script>
 </body>
