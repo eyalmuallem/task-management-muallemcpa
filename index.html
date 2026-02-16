@@ -645,6 +645,7 @@
                 <h1>מערכת ניהול משימות - אורי מועלם ושות'</h1>
                 <div class="user-info">
                     <span class="user-badge" id="currentUserDisplay"></span>
+                    <button class="btn btn-secondary btn-sm" onclick="openEditProfileModal()">ערוך פרופיל</button>
                     <button class="btn btn-secondary" onclick="logout()">התנתק</button>
                 </div>
             </div>
@@ -794,6 +795,66 @@
                     <input type="password" id="employeePassword" required minlength="6">
                 </div>
                 <button type="submit" class="btn btn-success" style="width: 100%;">הוסף עובד</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Employee Modal -->
+    <div id="editEmployeeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">עריכת פרטי עובד</h3>
+                <button class="close-modal" onclick="closeModal('editEmployeeModal')">&times;</button>
+            </div>
+            <form id="editEmployeeForm">
+                <input type="hidden" id="editEmployeeId">
+                <div class="form-group">
+                    <label>שם מלא</label>
+                    <input type="text" id="editEmployeeName" required>
+                </div>
+                <div class="form-group">
+                    <label>אימייל</label>
+                    <input type="email" id="editEmployeeEmail" disabled style="background: #f7fafc; cursor: not-allowed;">
+                    <small style="color: #718096; font-size: 12px; display: block; margin-top: 4px;">לא ניתן לשנות את האימייל</small>
+                </div>
+                <div class="form-group">
+                    <label>תפקיד</label>
+                    <select id="editEmployeeRole">
+                        <option value="employee">עובד</option>
+                        <option value="admin">מנהל</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>סיסמה חדשה (השאר ריק כדי לא לשנות)</label>
+                    <input type="password" id="editEmployeePassword" minlength="6" placeholder="לפחות 6 תווים">
+                </div>
+                <button type="submit" class="btn btn-success" style="width: 100%;">שמור שינויים</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal (for current user) -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">עריכת הפרופיל שלי</h3>
+                <button class="close-modal" onclick="closeModal('editProfileModal')">&times;</button>
+            </div>
+            <form id="editProfileForm">
+                <div class="form-group">
+                    <label>שם מלא</label>
+                    <input type="text" id="editProfileName" required>
+                </div>
+                <div class="form-group">
+                    <label>אימייל</label>
+                    <input type="email" id="editProfileEmail" disabled style="background: #f7fafc; cursor: not-allowed;">
+                    <small style="color: #718096; font-size: 12px; display: block; margin-top: 4px;">לא ניתן לשנות את האימייל</small>
+                </div>
+                <div class="form-group">
+                    <label>סיסמה חדשה (השאר ריק כדי לא לשנות)</label>
+                    <input type="password" id="editProfilePassword" minlength="6" placeholder="לפחות 6 תווים">
+                </div>
+                <button type="submit" class="btn btn-success" style="width: 100%;">שמור שינויים</button>
             </form>
         </div>
     </div>
@@ -1118,7 +1179,7 @@
                                 <div class="employee-name">${emp.name}</div>
                                 <div class="employee-email">${emp.email}</div>
                             </div>
-                            <button class="btn btn-danger btn-sm" onclick="deleteEmployee('${emp.id}')">מחק</button>
+                            <span class="badge ${emp.role === 'admin' ? 'badge-done' : 'badge-in-progress'}">${emp.role === 'admin' ? 'מנהל' : 'עובד'}</span>
                         </div>
                         <div class="employee-stats">
                             <div class="stat-card todo">
@@ -1137,6 +1198,8 @@
                         <div class="employee-actions">
                             <button class="btn btn-primary" onclick="viewEmployeeTasks('${emp.id}', '${emp.name}')" style="flex: 1;">צפה במשימות</button>
                             <button class="btn btn-secondary" onclick="openAssignTaskModal('${emp.id}', '${emp.name}')">הקצה משימה</button>
+                            <button class="btn btn-secondary btn-sm" onclick='openEditEmployeeModal(${JSON.stringify(emp).replace(/"/g, "&quot;")})'>ערוך פרטים</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteEmployee('${emp.id}')">מחק</button>
                         </div>
                     </div>
                 `;
@@ -1325,6 +1388,91 @@
         window.openAddEmployeeModal = function() {
             document.getElementById('addEmployeeModal').classList.add('active');
         };
+
+        // Open edit employee modal
+        window.openEditEmployeeModal = function(employee) {
+            document.getElementById('editEmployeeModal').classList.add('active');
+            document.getElementById('editEmployeeId').value = employee.id;
+            document.getElementById('editEmployeeName').value = employee.name;
+            document.getElementById('editEmployeeEmail').value = employee.email;
+            document.getElementById('editEmployeeRole').value = employee.role;
+            document.getElementById('editEmployeePassword').value = '';
+        };
+
+        // Open edit profile modal
+        window.openEditProfileModal = function() {
+            document.getElementById('editProfileModal').classList.add('active');
+            document.getElementById('editProfileName').value = currentUserData.name;
+            document.getElementById('editProfileEmail').value = currentUserData.email;
+            document.getElementById('editProfilePassword').value = '';
+        };
+
+        // Edit employee form
+        document.getElementById('editEmployeeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const employeeId = document.getElementById('editEmployeeId').value;
+            const name = document.getElementById('editEmployeeName').value;
+            const role = document.getElementById('editEmployeeRole').value;
+            const password = document.getElementById('editEmployeePassword').value;
+
+            try {
+                // Update user document in Firestore
+                await updateDoc(doc(db, 'users', employeeId), {
+                    name: name,
+                    role: role
+                });
+
+                // Update password if provided
+                if (password && password.length >= 6) {
+                    // Note: Changing password for other users requires Admin SDK
+                    // This is a limitation of Firebase client SDK
+                    alert('שינוי סיסמה לעובד אחר דורש הרשאות מנהל מתקדמות. הפרטים האחרים עודכנו בהצלחה.');
+                }
+
+                closeModal('editEmployeeModal');
+                document.getElementById('editEmployeeForm').reset();
+                alert('פרטי העובד עודכנו בהצלחה!');
+            } catch (error) {
+                console.error('Error updating employee:', error);
+                alert('שגיאה בעדכון פרטי עובד');
+            }
+        });
+
+        // Edit profile form
+        document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('editProfileName').value;
+            const password = document.getElementById('editProfilePassword').value;
+
+            try {
+                // Update user document
+                await updateDoc(doc(db, 'users', currentUser.uid), {
+                    name: name
+                });
+
+                // Update password if provided
+                if (password && password.length >= 6) {
+                    const { updatePassword } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
+                    await updatePassword(currentUser, password);
+                    alert('השם והסיסמה עודכנו בהצלחה!');
+                } else {
+                    alert('השם עודכן בהצלחה!');
+                }
+
+                // Update local data
+                currentUserData.name = name;
+                document.getElementById('currentUserDisplay').textContent = 
+                    `${currentUserData.name} (${currentUserData.role === 'admin' ? 'מנהל' : 'עובד'})`;
+
+                closeModal('editProfileModal');
+                document.getElementById('editProfileForm').reset();
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                alert('שגיאה בעדכון פרופיל');
+            }
+        });
 
         document.getElementById('addEmployeeForm').addEventListener('submit', async (e) => {
             e.preventDefault();
