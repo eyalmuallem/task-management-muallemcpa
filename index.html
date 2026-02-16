@@ -1180,22 +1180,8 @@
                                 <div class="employee-email">${emp.email}</div>
                             </div>
                             <span class="badge ${emp.role === 'admin' ? 'badge-done' : 'badge-in-progress'}">${emp.role === 'admin' ? 'מנהל' : 'עובד'}</span>
-                        </div>
-                        <div class="employee-stats">
-                            <div class="stat-card todo">
-                                <div class="stat-number">${todoTasks}</div>
-                                <div class="stat-label">לביצוע</div>
-                            </div>
-                            <div class="stat-card in-progress">
-                                <div class="stat-number">${inProgressTasks}</div>
-                                <div class="stat-label">בתהליך</div>
-                            </div>
-                            <div class="stat-card done">
-                                <div class="stat-number">${completedTasks}</div>
-                                <div class="stat-label">הושלם</div>
-                            </div>
-                        </div>
-                        <div class="employee-actions">
+                       </div>
+                        <div class="employee-actions" style="margin-top: 0;">
                             <button class="btn btn-primary" onclick="viewEmployeeTasks('${emp.id}', '${emp.name}')" style="flex: 1;">צפה במשימות</button>
                             <button class="btn btn-secondary" onclick="openAssignTaskModal('${emp.id}', '${emp.name}')">הקצה משימה</button>
                             <button class="btn btn-secondary btn-sm" onclick='openEditEmployeeModal(${JSON.stringify(emp).replace(/"/g, "&quot;")})'>ערוך פרטים</button>
