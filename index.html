@@ -1587,10 +1587,14 @@
 
                 const newNotes = document.getElementById('editTaskNotes').value;
                 if (newNotes) {
+                    const task = allTasks.find(t => t.id === taskId);
                     const timestamp = new Date().toLocaleString('he-IL');
-                    updateData.notes = `[${timestamp}] ${newNotes}`;
+                    const existingNotes = task.notes || '';
+                    // Append new note to existing notes
+                    updateData.notes = existingNotes 
+                        ? `${existingNotes}\n\n[${timestamp}] ${newNotes}`
+                        : `[${timestamp}] ${newNotes}`;
                 }
-
                 await updateDoc(doc(db, 'tasks', taskId), updateData);
                 closeModal('editTaskModal');
             } catch (error) {
