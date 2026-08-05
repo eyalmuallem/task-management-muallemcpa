@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#12233f">
+    <title>מערכת ניהול משימות - אורי מועלם ושות'</title>
+    <style>
+        .hidden { display: none !important; }
+        html { background: #f4f7fb; }
+    </style>
+    <link rel="stylesheet" href="./assets/css/styles.css">
+</head>
+<body>
+    <div class="app-shell">
+        <div id="loadingScreen" class="loading-screen" aria-live="polite">
+            <div class="loading-spinner" aria-hidden="true"></div>
+            <p>טוען את המערכת...</p>
+        </div>
+
+        <main id="loginScreen" class="login-page hidden">
+            <section class="login-card">
+                <div class="login-brand-mark">א.מ</div>
+                <h1>אורי מועלם ושות'</h1>
+                <p>מערכת ניהול משימות משרדית</p>
+                <div id="loginError" class="alert alert-error hidden" role="alert"></div>
+                <form id="loginForm" class="form-stack">
+                    <div class="form-group">
+                        <label for="email">אימייל</label>
+                        <input type="email" id="email" autocomplete="username" required placeholder="email@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">סיסמה</label>
+                        <input type="password" id="password" autocomplete="current-password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">התחבר</button>
+                </form>
+            </section>
+        </main>
+
+        <div id="mainApp" class="hidden">
+            <header class="topbar">
+                <div class="brand-block">
+                    <div class="brand-mark">א.מ</div>
+                    <div>
+                        <h1>מערכת ניהול משימות</h1>
+                        <p>אורי מועלם ושות'</p>
+                    </div>
+                </div>
+                <div class="user-actions">
+                    <span id="currentUserDisplay" class="user-badge"></span>
+                    <button type="button" class="btn btn-ghost btn-sm" data-action="open-profile">ערוך פרופיל</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-action="logout">התנתק</button>
+                </div>
+            </header>
+
+            <main class="workspace">
+                <section id="adminView" class="hidden">
+                    <nav class="tabs" aria-label="ניווט מנהל">
+                        <button type="button" class="tab active" data-admin-tab="board">לוח ראשי</button>
+                        <button type="button" class="tab" data-admin-tab="calendar">לוח שנה</button>
+                        <button type="button" class="tab" data-admin-tab="employee-tasks">משימות לפי עובד</button>
+                        <button type="button" class="tab" data-admin-tab="employees">עובדים</button>
+                        <button type="button" class="tab" data-admin-tab="all-tasks">כל המשימות</button>
+                    </nav>
+
+                    <section id="boardTab" class="tab-content active">
+                        <div class="section-header">
+                            <div>
+                                <p class="eyebrow">תמונת מצב</p>
+                                <h2 class="section-title">לוח המשימות הראשי</h2>
+                            </div>
+                            <button type="button" class="btn btn-primary" data-action="open-add-task">משימה חדשה</button>
+                        </div>
+                        <div id="adminSummary" class="summary-grid"></div>
+                        <div class="task-board">
+                            <section class="board-column todo">
+                                <header class="board-column-header">
+                                    <span class="board-column-title">לביצוע</span>
+                                    <span class="board-column-count" id="todoCount">0</span>
+                                </header>
+                                <div id="todoTasks" class="board-list"></div>
+                            </section>
+                            <section class="board-column in-progress">
+                                <header class="board-column-header">
+                                    <span class="board-column-title">בתהליך</span>
+                                    <span class="board-column-count" id="inProgressCount">0</span>
+                                </header>
+                                <div id="inProgressTasks" class="board-list"></div>
+                            </section>
+                            <section class="board-column done">
+                                <header class="board-column-header">
+                                    <span class="board-column-title">הושלם</span>
+                                    <span class="board-column-count" id="doneCount">0</span>
+                                </header>
+                                <div id="doneTasks" class="board-list"></div>
+                            </section>
+                        </div>
+                    </section>
+
+                    <section id="adminCalendarTab" class="tab-content">
+                        <div class="section-header section-header-wrap calendar-section-header">
+                            <div>
+                                <p class="eyebrow">תכנון ומעקב</p>
+                                <h2 class="section-title">לוח שנה למשימות</h2>
+                                <p class="section-description">המשימות מוצגות ביום היעד שלהן. ירוק מציין יעד עתידי, צהוב יעד למחר ואדום יעד להיום או משימה באיחור.</p>
+                            </div>
+                            <div class="calendar-filters">
+                                <div class="form-group compact-form-group">
+                                    <label for="adminCalendarFilter">הצג</label>
+                                    <select id="adminCalendarFilter" class="filter-select">
+                                        <option value="assigned-by-me">משימות שאני נתתי לעובדים</option>
+                                        <option value="all-employees">משימות כל העובדים</option>
+                                        <option value="employee">משימות לפי עובד</option>
+                                    </select>
+                                </div>
+                                <div id="adminCalendarEmployeeGroup" class="form-group compact-form-group hidden">
+                                    <label for="adminCalendarEmployee">עובד</label>
+                                    <select id="adminCalendarEmployee" class="filter-select"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="calendar-panel">
+                            <div class="calendar-toolbar">
+                                <button type="button" class="btn btn-secondary btn-sm" data-action="calendar-prev" data-calendar-target="admin">החודש הקודם</button>
+                                <div class="calendar-toolbar-center">
+                                    <h3 id="adminCalendarTitle" class="calendar-title"></h3>
+                                    <button type="button" class="text-button" data-action="calendar-today" data-calendar-target="admin">חזרה לחודש הנוכחי</button>
+                                </div>
+                                <button type="button" class="btn btn-secondary btn-sm" data-action="calendar-next" data-calendar-target="admin">החודש הבא</button>
+                            </div>
+                            <div class="calendar-legend" aria-label="מקרא צבעים">
+                                <span><i class="legend-dot urgency-future"></i>יותר מיום עד היעד</span>
+                                <span><i class="legend-dot urgency-tomorrow"></i>היעד מחר</span>
+                                <span><i class="legend-dot urgency-due"></i>היום או באיחור</span>
+                                <span><i class="legend-dot urgency-completed"></i>הושלם</span>
+                            </div>
+                            <div class="calendar-weekdays" aria-hidden="true">
+                                <span>ראשון</span><span>שני</span><span>שלישי</span><span>רביעי</span><span>חמישי</span><span>שישי</span><span>שבת</span>
+                            </div>
+                            <div id="adminCalendarGrid" class="calendar-grid"></div>
+                        </div>
+                    </section>
+
+                    <section id="employeeTasksTab" class="tab-content">
+                        <div id="employeeDirectoryView">
+                            <div class="section-header">
+                                <div>
+                                    <p class="eyebrow">מעקב צוות</p>
+                                    <h2 class="section-title">משימות לפי עובד</h2>
+                                    <p class="section-description">בחר עובד כדי לפתוח את המשימות שלו ולצפות בעדכוני ההתקדמות.</p>
+                                </div>
+                            </div>
+                            <div id="employeeTaskDirectory" class="employee-directory"></div>
+                        </div>
+
+                        <div id="employeeDetailView" class="hidden">
+                            <div class="section-header detail-header">
+                                <div>
+                                    <button type="button" class="text-button" data-action="back-to-employees">חזרה לכל העובדים</button>
+                                    <h2 id="employeeDetailTitle" class="section-title">משימות עובד</h2>
+                                    <p id="employeeDetailSubtitle" class="section-description"></p>
+                                </div>
+                                <button id="assignTaskToSelectedEmployee" type="button" class="btn btn-primary">הקצה משימה</button>
+                            </div>
+                            <div class="task-board employee-detail-board">
+                                <section class="board-column todo">
+                                    <header class="board-column-header">
+                                        <span class="board-column-title">לביצוע</span>
+                                        <span class="board-column-count" id="empTodoCount">0</span>
+                                    </header>
+                                    <div id="empTodoTasks" class="board-list"></div>
+                                </section>
+                                <section class="board-column in-progress">
+                                    <header class="board-column-header">
+                                        <span class="board-column-title">בתהליך</span>
+                                        <span class="board-column-count" id="empInProgressCount">0</span>
+                                    </header>
+                                    <div id="empInProgressTasks" class="board-list"></div>
+                                </section>
+                                <section class="board-column done">
+                                    <header class="board-column-header">
+                                        <span class="board-column-title">הושלם</span>
+                                        <span class="board-column-count" id="empDoneCount">0</span>
+                                    </header>
+                                    <div id="empDoneTasks" class="board-list"></div>
+                                </section>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="employeesTab" class="tab-content">
+                        <div class="section-header">
+                            <div>
+                                <p class="eyebrow">ניהול מערכת</p>
+                                <h2 class="section-title">עובדים</h2>
+                            </div>
+                            <button type="button" class="btn btn-primary" data-action="open-add-employee">הוסף עובד</button>
+                        </div>
+                        <div id="employeesList" class="employee-list"></div>
+                    </section>
+
+                    <section id="allTasksTab" class="tab-content">
+                        <div class="section-header section-header-wrap">
+                            <div>
+                                <p class="eyebrow">מאגר משימות</p>
+                                <h2 class="section-title">כל המשימות במערכת</h2>
+                            </div>
+                            <div class="filters-row">
+                                <input id="taskSearchInput" class="filter-input" type="search" placeholder="חיפוש לפי לקוח, משימה או עובד">
+                                <select id="taskStatusFilter" class="filter-select" aria-label="סינון לפי סטטוס">
+                                    <option value="all">כל הסטטוסים</option>
+                                    <option value="todo">לביצוע</option>
+                                    <option value="in-progress">בתהליך</option>
+                                    <option value="done">הושלם</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="allTasksList" class="detailed-task-list"></div>
+                    </section>
+                </section>
+
+                <section id="employeeView" class="hidden">
+                    <nav class="tabs employee-tabs" aria-label="ניווט עובד">
+                        <button type="button" class="tab active" data-employee-tab="tasks">לוח משימות</button>
+                        <button type="button" class="tab" data-employee-tab="calendar">לוח שנה</button>
+                    </nav>
+
+                    <section id="employeeBoardTab" class="employee-tab-content active">
+                    <div class="section-header">
+                        <div>
+                            <p class="eyebrow">אזור אישי</p>
+                            <h2 class="section-title">המשימות שלי</h2>
+                        </div>
+                        <button type="button" class="btn btn-primary" data-action="open-add-task">משימה חדשה</button>
+                    </div>
+                    <div id="employeeSummary" class="summary-grid"></div>
+                    <div class="task-board">
+                        <section class="board-column todo">
+                            <header class="board-column-header">
+                                <span class="board-column-title">לביצוע</span>
+                                <span class="board-column-count" id="myTodoCount">0</span>
+                            </header>
+                            <div id="myTodoTasks" class="board-list"></div>
+                        </section>
+                        <section class="board-column in-progress">
+                            <header class="board-column-header">
+                                <span class="board-column-title">בתהליך</span>
+                                <span class="board-column-count" id="myInProgressCount">0</span>
+                            </header>
+                            <div id="myInProgressTasks" class="board-list"></div>
+                        </section>
+                        <section class="board-column done">
+                            <header class="board-column-header">
+                                <span class="board-column-title">הושלם</span>
+                                <span class="board-column-count" id="myDoneCount">0</span>
+                            </header>
+                            <div id="myDoneTasks" class="board-list"></div>
+                        </section>
+                    </div>
+                    </section>
+
+                    <section id="employeeCalendarTab" class="employee-tab-content">
+                        <div class="section-header calendar-section-header">
+                            <div>
+                                <p class="eyebrow">המשימות שלי</p>
+                                <h2 class="section-title">לוח שנה אישי</h2>
+                                <p class="section-description">כאן מופיעות המשימות שהוקצו לך וגם משימות שיצרת לעצמך, כולל משימות חודשיות ודו-חודשיות.</p>
+                            </div>
+                            <button type="button" class="btn btn-primary" data-action="open-add-task">משימה חדשה</button>
+                        </div>
+                        <div class="calendar-panel">
+                            <div class="calendar-toolbar">
+                                <button type="button" class="btn btn-secondary btn-sm" data-action="calendar-prev" data-calendar-target="employee">החודש הקודם</button>
+                                <div class="calendar-toolbar-center">
+                                    <h3 id="employeeCalendarTitle" class="calendar-title"></h3>
+                                    <button type="button" class="text-button" data-action="calendar-today" data-calendar-target="employee">חזרה לחודש הנוכחי</button>
+                                </div>
+                                <button type="button" class="btn btn-secondary btn-sm" data-action="calendar-next" data-calendar-target="employee">החודש הבא</button>
+                            </div>
+                            <div class="calendar-legend" aria-label="מקרא צבעים">
+                                <span><i class="legend-dot urgency-future"></i>יותר מיום עד היעד</span>
+                                <span><i class="legend-dot urgency-tomorrow"></i>היעד מחר</span>
+                                <span><i class="legend-dot urgency-due"></i>היום או באיחור</span>
+                                <span><i class="legend-dot urgency-completed"></i>הושלם</span>
+                            </div>
+                            <div class="calendar-weekdays" aria-hidden="true">
+                                <span>ראשון</span><span>שני</span><span>שלישי</span><span>רביעי</span><span>חמישי</span><span>שישי</span><span>שבת</span>
+                            </div>
+                            <div id="employeeCalendarGrid" class="calendar-grid"></div>
+                        </div>
+                    </section>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <div id="addEmployeeModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="addEmployeeTitle">
+        <div class="modal-content modal-small">
+            <header class="modal-header">
+                <h3 id="addEmployeeTitle" class="modal-title">הוסף עובד חדש</h3>
+                <button type="button" class="close-modal" data-close-modal="addEmployeeModal" aria-label="סגור">×</button>
+            </header>
+            <form id="addEmployeeForm" class="form-stack">
+                <div class="form-group">
+                    <label for="employeeName">שם מלא</label>
+                    <input type="text" id="employeeName" required>
+                </div>
+                <div class="form-group">
+                    <label for="employeeEmail">אימייל</label>
+                    <input type="email" id="employeeEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="employeePassword">סיסמה ראשונית</label>
+                    <input type="password" id="employeePassword" required minlength="6" autocomplete="new-password">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">הוסף עובד</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="editEmployeeModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="editEmployeeTitle">
+        <div class="modal-content modal-small">
+            <header class="modal-header">
+                <h3 id="editEmployeeTitle" class="modal-title">עריכת עובד</h3>
+                <button type="button" class="close-modal" data-close-modal="editEmployeeModal" aria-label="סגור">×</button>
+            </header>
+            <form id="editEmployeeForm" class="form-stack">
+                <input type="hidden" id="editEmployeeId">
+                <div class="form-group">
+                    <label for="editEmployeeName">שם מלא</label>
+                    <input type="text" id="editEmployeeName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editEmployeeEmail">אימייל</label>
+                    <input type="email" id="editEmployeeEmail" disabled>
+                    <small>שינוי אימייל או סיסמה של עובד אחר דורש Firebase Admin ואינו מבוצע בממשק זה.</small>
+                </div>
+                <div class="form-group">
+                    <label for="editEmployeeRole">תפקיד</label>
+                    <select id="editEmployeeRole">
+                        <option value="employee">עובד</option>
+                        <option value="admin">מנהל</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">שמור שינויים</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="editProfileModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="editProfileTitle">
+        <div class="modal-content modal-small">
+            <header class="modal-header">
+                <h3 id="editProfileTitle" class="modal-title">עריכת הפרופיל שלי</h3>
+                <button type="button" class="close-modal" data-close-modal="editProfileModal" aria-label="סגור">×</button>
+            </header>
+            <form id="editProfileForm" class="form-stack">
+                <div class="form-group">
+                    <label for="editProfileName">שם מלא</label>
+                    <input type="text" id="editProfileName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editProfileEmail">אימייל</label>
+                    <input type="email" id="editProfileEmail" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="editProfilePassword">סיסמה חדשה</label>
+                    <input type="password" id="editProfilePassword" minlength="6" autocomplete="new-password" placeholder="השאר ריק כדי לא לשנות">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">שמור שינויים</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="addTaskModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="addTaskModalTitle">
+        <div class="modal-content modal-medium">
+            <header class="modal-header">
+                <h3 id="addTaskModalTitle" class="modal-title">משימה חדשה</h3>
+                <button type="button" class="close-modal" data-close-modal="addTaskModal" aria-label="סגור">×</button>
+            </header>
+            <form id="addTaskForm" class="form-stack">
+                <div class="form-group">
+                    <label for="taskClientName">שם לקוח</label>
+                    <input type="text" id="taskClientName" required placeholder="לדוגמה: ישראל ישראלי בע״מ">
+                </div>
+                <div class="form-group">
+                    <label for="taskTitle">כותרת משימה</label>
+                    <input type="text" id="taskTitle" required placeholder="לדוגמה: הכנת דוח שנתי">
+                </div>
+                <div class="form-group">
+                    <label for="taskDescription">פירוט</label>
+                    <textarea id="taskDescription" rows="5" placeholder="פרטי העבודה, מסמכים חסרים והנחיות"></textarea>
+                </div>
+                <div class="form-grid-two">
+                    <div class="form-group">
+                        <label for="taskDueDate">תאריך יעד</label>
+                        <input type="date" id="taskDueDate">
+                    </div>
+                    <div id="assignToGroup" class="form-group hidden">
+                        <label for="assignToEmployee">הקצה לעובד</label>
+                        <select id="assignToEmployee"></select>
+                    </div>
+                </div>
+                <div id="taskRecurrenceGroup" class="form-group hidden">
+                    <label for="taskRecurrence">חזרתיות</label>
+                    <select id="taskRecurrence">
+                        <option value="none">לא חזרתית</option>
+                        <option value="monthly">חזרה כל חודש</option>
+                        <option value="bimonthly">חזרה כל חודשיים</option>
+                    </select>
+                    <small>חזרתיות זמינה לעובד עבור משימה שהוא יוצר לעצמו. למשימה חזרתית חובה להגדיר תאריך יעד ראשון.</small>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">צור משימה</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="editTaskModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="editTaskTitleHeading">
+        <div class="modal-content modal-medium">
+            <header class="modal-header">
+                <h3 id="editTaskTitleHeading" class="modal-title">עדכון משימה</h3>
+                <button type="button" class="close-modal" data-close-modal="editTaskModal" aria-label="סגור">×</button>
+            </header>
+            <form id="editTaskForm" class="form-stack">
+                <input type="hidden" id="editTaskId">
+                <div class="form-group">
+                    <label for="editTaskClientName">שם לקוח</label>
+                    <input type="text" id="editTaskClientName" placeholder="לא הוגדר לקוח">
+                </div>
+                <div class="form-group">
+                    <label for="editTaskTitle">כותרת משימה</label>
+                    <input type="text" id="editTaskTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="editTaskDescription">פירוט</label>
+                    <textarea id="editTaskDescription" rows="4"></textarea>
+                </div>
+                <div class="form-grid-two">
+                    <div class="form-group">
+                        <label for="editTaskStatus">סטטוס</label>
+                        <select id="editTaskStatus">
+                            <option value="todo">לביצוע</option>
+                            <option value="in-progress">בתהליך</option>
+                            <option value="done">הושלם</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editTaskDueDate">תאריך יעד</label>
+                        <input type="date" id="editTaskDueDate">
+                    </div>
+                </div>
+                <div id="editTaskRecurrenceGroup" class="form-group hidden">
+                    <label for="editTaskRecurrence">חזרתיות</label>
+                    <select id="editTaskRecurrence">
+                        <option value="none">לא חזרתית</option>
+                        <option value="monthly">חזרה כל חודש</option>
+                        <option value="bimonthly">חזרה כל חודשיים</option>
+                    </select>
+                    <small>שינוי התדירות חל מהתאריך המוגדר כעת והלאה.</small>
+                </div>
+                <div id="progressNoteGroup" class="form-group">
+                    <label for="editTaskNotes">עדכון התקדמות חדש</label>
+                    <textarea id="editTaskNotes" rows="3" placeholder="מה בוצע, מה נשאר או מה מעכב את העבודה"></textarea>
+                    <small>העדכון יתווסף להיסטוריה הקיימת ולא ימחק עדכונים קודמים.</small>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">שמור שינויים</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="progressNotesModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="progressNotesTitle">
+        <div class="modal-content modal-medium">
+            <header class="modal-header">
+                <div>
+                    <p id="progressNotesClient" class="modal-eyebrow"></p>
+                    <h3 id="progressNotesTitle" class="modal-title">הערות התקדמות</h3>
+                </div>
+                <button type="button" class="close-modal" data-close-modal="progressNotesModal" aria-label="סגור">×</button>
+            </header>
+            <div id="progressNotesContent" class="progress-notes-content"></div>
+        </div>
+    </div>
+
+    <div id="addCommentModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="addCommentTitle">
+        <div class="modal-content modal-small">
+            <header class="modal-header">
+                <h3 id="addCommentTitle" class="modal-title">הוסף הערת מנהל</h3>
+                <button type="button" class="close-modal" data-close-modal="addCommentModal" aria-label="סגור">×</button>
+            </header>
+            <form id="addCommentForm" class="form-stack">
+                <input type="hidden" id="commentTaskId">
+                <div class="form-group">
+                    <label for="commentText">הערה</label>
+                    <textarea id="commentText" rows="4" required placeholder="הנחיה, שאלה או הערה לעובד"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">שלח הערה</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="calendarDayModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="calendarDayTitle">
+        <div class="modal-content modal-medium">
+            <header class="modal-header">
+                <div>
+                    <p class="modal-eyebrow">משימות ליום הנבחר</p>
+                    <h3 id="calendarDayTitle" class="modal-title"></h3>
+                </div>
+                <button type="button" class="close-modal" data-close-modal="calendarDayModal" aria-label="סגור">×</button>
+            </header>
+            <div id="calendarDayTasks" class="calendar-day-task-list"></div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script type="module" src="./assets/js/app.js"></script>
+</body>
+</html>
